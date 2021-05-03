@@ -1,0 +1,26 @@
+stages:
+  - build
+  - deploy
+build:
+  stage: build
+  only:
+    - master
+    - release
+    - develop
+  script:
+    - mvn clean install
+    - rm /app/rest/rest-0.0.1-SNAPSHOT.jar.bak
+    - mv /app/rest/rest-0.0.1-SNAPSHOT.jar /app/rest/rest-0.0.1-SNAPSHOT.jar.bak
+    - cp ./target/rest-0.0.1-SNAPSHOT.jar /app/rest/rest-0.0.1-SNAPSHOT.jar
+  tags:
+    - build
+deploy:
+  stage: deploy
+  only:
+    - master
+    - release
+    - develop
+  script:
+    - sudo service rest restart
+  tags:
+    - deploy

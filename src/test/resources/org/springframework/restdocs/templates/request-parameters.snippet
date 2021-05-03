@@ -1,0 +1,11 @@
+===== Request Parameters
+|===
+|PARAMETER|FORMAT|REQUIRED|DESCRIPTION
+
+{{#parameters}}
+	.^|{{#tableCellContent}}`+{{name}}+`{{/tableCellContent}}
+	.^|{{#tableCellContent}}{{#format}}{{.}}{{/format}}{{/tableCellContent}}
+	.^|{{#tableCellContent}}{{^optional}}true{{/optional}}{{/tableCellContent}}
+	.^|{{#tableCellContent}}{{description}}{{/tableCellContent}}
+{{/parameters}}
+|===

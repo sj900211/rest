@@ -1,0 +1,137 @@
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:docinfo: shared-head
+
+= 권한 Docs
+
+[[auth-docs]]
+== 권한 관리
+
+[[sign-docs]]
+=== 로그인 계정 관리
+
+[[refresh-token]]
+==== Access 토큰 갱신
+
+include::{snippets}/auth-controller-test/refresh-token/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/auth-controller-test/refresh-token/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/auth-controller-test/refresh-token/http-response.adoc[]
+
+'''
+
+[[sign-in]]
+==== 로그인
+
+include::{snippets}/auth-controller-test/sign-in/request-fields.adoc[]
+
+include::{snippets}/auth-controller-test/sign-in/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/auth-controller-test/sign-in/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/auth-controller-test/sign-in/http-response.adoc[]
+
+'''
+
+[[sign-out]]
+==== 로그아웃
+
+===== Request HTTP Example
+include::{snippets}/auth-controller-test/sign-out/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/auth-controller-test/sign-out/http-response.adoc[]
+
+'''
+
+[[update-password]]
+==== 로그인한 계정 비밀번호 변경
+
+include::{snippets}/auth-controller-test/update-password/request-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/auth-controller-test/update-password/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/auth-controller-test/update-password/http-response.adoc[]
+
+'''
+
+[[get-info-by-manager]]
+==== 로그인한 계정 정보 조회 - 관리자
+
+include::{snippets}/auth-controller-test/get-info-by-manager/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/auth-controller-test/get-info-by-manager/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/auth-controller-test/get-info-by-manager/http-response.adoc[]
+
+'''
+
+[[get-info-by-account]]
+==== 로그인한 계정 정보 조회 - 사용자
+
+include::{snippets}/auth-controller-test/get-info-by-account/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/auth-controller-test/get-info-by-account/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/auth-controller-test/get-info-by-account/http-response.adoc[]
+
+'''
+
+[[update-info-by-manager]]
+==== 로그인한 계정 정보 수정 - 관리자
+
+include::{snippets}/auth-controller-test/update-info-by-manager/request-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/auth-controller-test/update-info-by-manager/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/auth-controller-test/update-info-by-manager/http-response.adoc[]
+
+'''
+
+[[update-info-by-account]]
+==== 로그인한 계정 정보 수정 - 사용자
+
+include::{snippets}/auth-controller-test/update-info-by-account/request-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/auth-controller-test/update-info-by-account/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/auth-controller-test/update-info-by-account/http-response.adoc[]
+
+'''
+
+[[remove-info]]
+==== 로그인한 계정 탈퇴 처리
+
+===== Request HTTP Example
+include::{snippets}/auth-controller-test/remove-info/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/auth-controller-test/remove-info/http-response.adoc[]
+
+
+
+
+
+include::./lnb.adoc[]

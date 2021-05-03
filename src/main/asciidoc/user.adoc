@@ -1,0 +1,80 @@
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:docinfo: shared-head
+
+= 사용자 Docs
+
+[[user-docs]]
+== 사용자 관리
+
+[[account-docs]]
+=== 계정 관리
+
+[[create-account]]
+==== 사용자 계정 등록
+
+include::{snippets}/user-controller-test/create-account/request-fields.adoc[]
+
+include::{snippets}/user-controller-test/create-account/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/user-controller-test/create-account/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/user-controller-test/create-account/http-response.adoc[]
+
+'''
+
+[[get-account-page]]
+==== 사용자 계정 정보 조회 - Page
+
+include::{snippets}/user-controller-test/get-account-page/request-parameters.adoc[]
+
+include::{snippets}/user-controller-test/get-account-page/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/user-controller-test/get-account-page/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/user-controller-test/get-account-page/http-response.adoc[]
+
+'''
+
+[[get-account]]
+==== 사용자 계정 정보 조회
+
+include::{snippets}/user-controller-test/get-account/path-parameters.adoc[]
+
+include::{snippets}/user-controller-test/get-account/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/user-controller-test/get-account/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/user-controller-test/get-account/http-response.adoc[]
+
+'''
+
+[[remove-account]]
+==== 사용자 계정 탈퇴 처리
+
+include::{snippets}/user-controller-test/remove-account/path-parameters.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/user-controller-test/remove-account/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/user-controller-test/remove-account/http-response.adoc[]
+
+
+
+
+
+include::./lnb.adoc[]

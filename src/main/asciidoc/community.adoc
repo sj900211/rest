@@ -1,0 +1,110 @@
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:docinfo: shared-head
+
+= 커뮤니티 Docs
+
+[[community-docs]]
+== 커뮤니티 관리
+
+[[board-docs]]
+=== 게시글 관리
+
+[[create-board]]
+==== 게시글 등록
+
+include::{snippets}/community-controller-test/create-board/request-fields.adoc[]
+
+include::{snippets}/community-controller-test/create-board/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/community-controller-test/create-board/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/community-controller-test/create-board/http-response.adoc[]
+
+'''
+
+[[get-board-page]]
+==== 게시글 정보 조회 - Page
+
+include::{snippets}/community-controller-test/get-board-page/request-parameters.adoc[]
+
+include::{snippets}/community-controller-test/get-board-page/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/community-controller-test/get-board-page/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/community-controller-test/get-board-page/http-response.adoc[]
+
+'''
+
+[[get-board]]
+==== 게시글 정보 조회
+
+include::{snippets}/community-controller-test/get-board/path-parameters.adoc[]
+
+include::{snippets}/community-controller-test/get-board/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/community-controller-test/get-board/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/community-controller-test/get-board/http-response.adoc[]
+
+'''
+
+[[update-board]]
+==== 게시글 정보 수정
+
+include::{snippets}/community-controller-test/update-board/path-parameters.adoc[]
+
+include::{snippets}/community-controller-test/update-board/request-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/community-controller-test/update-board/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/community-controller-test/update-board/http-response.adoc[]
+
+'''
+
+[[remove-board]]
+==== 게시글 삭제 처리
+
+include::{snippets}/community-controller-test/remove-board/path-parameters.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/community-controller-test/remove-board/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/community-controller-test/remove-board/http-response.adoc[]
+
+'''
+
+[[get-board-attach-mapping-list]]
+==== 게시글 첨부파일 정보 조회 - List
+
+include::{snippets}/community-controller-test/get-board-attach-mapping-list/path-parameters.adoc[]
+
+include::{snippets}/community-controller-test/get-board-attach-mapping-list/response-fields.adoc[]
+
+===== Request HTTP Example
+include::{snippets}/community-controller-test/get-board-attach-mapping-list/http-request.adoc[]
+
+===== Response HTTP Example
+include::{snippets}/community-controller-test/get-board-attach-mapping-list/http-response.adoc[]
+
+
+
+
+
+include::./lnb.adoc[]

@@ -1,0 +1,56 @@
+spring:
+  jpa:
+    show-sql: true
+    database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show-sql: true
+        SQL: debug
+        format_sql: true
+        use_sql_comments: true
+        type:
+          descriptor:
+            sql: debug
+
+  jackson:
+    default-property-inclusion: non_null
+
+  redis:
+    host: localhost
+    port: 6379
+#    host: 121.134.10.94
+#    port: 20002
+
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/DB_DEV
+#    url: jdbc:mariadb://121.134.10.94:20001/DB_DEV
+    username: dev
+    password: dltkdgoTl#001
+    hikari:
+      driver-class-name: org.mariadb.jdbc.Driver
+
+  mail:
+    host: XXX.XXX.XXX
+    port: 587
+    username: XXX@XXX.XXX
+    password: XXX
+
+logging:
+  level:
+    org:
+      hibernate:
+        type: debug
+  file:
+    path: ./.log
+  logback:
+    rollingpolicy:
+      max-file-size: 30MB
+      max-history: 10
+
+freshr:
+  email:
+    from: XXX@XXX.XXX

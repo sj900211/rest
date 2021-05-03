@@ -1,0 +1,145 @@
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+:sectlinks:
+
+++++
+<script>
+	var navis = [
+		{
+			title: 'Home',
+			mapping: '',
+			link: '/docs/index',
+            blank: false
+		},
+		{
+			title: 'Common API',
+			mapping: '/**',
+			link: '/docs/common',
+            blank: false
+		},
+		{
+			title: 'Auth API',
+			mapping: '/auth/**',
+			link: '/docs/auth',
+            blank: false
+		},
+		{
+			title: 'User API',
+			mapping: '/user/**',
+			link: '/docs/user',
+            blank: false
+		},
+		{
+			title: 'Setting API',
+			mapping: '/setting/**',
+			link: '/docs/setting',
+            blank: false
+		},
+		{
+			title: 'Community API',
+			mapping: '/community/**',
+			link: '/docs/community',
+            blank: false
+		},
+		{
+			title: 'Database Document',
+			mapping: '',
+			link: '/docs/database/document',
+            blank: true
+		}
+	];
+
+	function initNavi () {
+		var _toc = document.querySelector('#toc');
+		var _toctitle = document.querySelector('#toctitle');
+		var _sectlevel1 = document.querySelector('ul.sectlevel1');
+
+		var _wrapper = document.createElement('li');
+		var _title = document.createElement('a');
+		var _ul = document.createElement('ul');
+
+		_title.textContent = 'API List';
+		_ul.classList.add('sectlevel2');
+
+		for (var i = 0; i < navis.length; i++) {
+			var _navi = navis[i];
+			var _li = document.createElement('li');
+			var _a = document.createElement('a');
+
+            if (_navi.mapping != '') {
+                _a.textContent = _navi.title + ' [' + _navi.mapping + ']'
+            }
+            else {
+                _a.textContent = _navi.title;
+            }
+
+			_a.setAttribute('href', _navi.link);
+
+            if (_navi.blank) {
+                _a.setAttribute('target', '_blank');
+            }
+
+			_li.appendChild(_a);
+			_ul.appendChild(_li);
+		}
+
+		_wrapper.appendChild(_title);
+		_wrapper.appendChild(_ul);
+        _wrapper.appendChild(document.createElement('br'));
+        _wrapper.appendChild(document.createElement('br'));
+        _wrapper.appendChild(document.createElement('br'));
+        _wrapper.style.fontWeight = '900';
+
+		_sectlevel1.insertBefore(_wrapper, _sectlevel1.childNodes[0] || null);
+	}
+
+	function initFold () {
+		var _sect4List = document.querySelectorAll('.sect4');
+
+		for (var i = 0; i < _sect4List.length; i++) {
+			var _this = _sect4List[i];
+
+			var _sect4Title = _this.querySelector('h5');
+			var _sect4Body = _this.querySelectorAll('table');
+			var _sect4Code = _this.querySelectorAll('.listingblock');
+
+			for (var j = 0; j < _sect4Body.length; j++) {
+				_sect4Body[j].style.display = 'none';
+			}
+
+			for (var j = 0; j < _sect4Code.length; j++) {
+				_sect4Code[j].style.display = 'none';
+			}
+
+			_sect4Title.setAttribute('flag', false);
+
+			_sect4Title.addEventListener('click', actionTitle);
+		}
+	}
+
+	function actionTitle (event) {
+		var _sect4 = event.target.parentElement.parentElement;
+		var _sect4Title = _sect4.querySelector('h5');
+		var _sect4Body = _sect4.querySelectorAll('table');
+		var _sect4Code = _sect4.querySelectorAll('.listingblock');
+		var _flag = _sect4Title.getAttribute('flag') == 'false';
+		var _display = _flag ? null : 'none';
+
+		_sect4Title.setAttribute('flag', _flag);
+
+		for (var j = 0; j < _sect4Body.length; j++) {
+			_sect4Body[j].style.display = _display;
+		}
+
+		for (var j = 0; j < _sect4Code.length; j++) {
+			_sect4Code[j].style.display = _display;
+		}
+	}
+
+	document.addEventListener('DOMContentLoaded', function () {
+		initNavi();
+		// initFold();
+	});
+</script>
+++++

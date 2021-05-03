@@ -1,0 +1,295 @@
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 3
+:sectlinks:
+:docinfo: shared-head
+
+= Rest Document
+
+API 기능을 정의한 문서입니다.
++++<br>+++
+네비게이션에서 원하는 기능 혹은 URI 패턴을 클릭하면
++++<br>+++
+해당 기능 혹은 URI 패턴을 가지는
++++<br>+++
+API 문서를 확인하실 수 있습니다.
+
+
+
+[NOTE]
+====
+사용하시다가 불편하시거나 요청사항이 있는 경우
++++<br>+++
+CT 1 그룹에 문의해주세요.
++++<br>+++
+감사합니다.
+====
+
+== 용어 정리
+
+.&period;
+----
+요청 또는 반환 정보에 있는 온점은 객체(단일) 를(을) 의미합니다.
+----
+
+.&lsqb;&rsqb;
+----
+요청 또는 반환 정보에 있는 대괄호는 배열(목록) 을 의미합니다.
+----
+.End Point
+----
+URI 파라미터가 있는 경우 원래 URI 정보
+----
+.Request Parameters
+----
+GET, DELETE
+요청하는 데이터의 정보 (QueryString)
+----
+.Path Parameters
+----
+URI 파라미터 데이터의 정보
+----
+.Request Fields
+----
+POST, PUT, DELETE
+요청하는 데이터의 정보 (RequestBody)
+----
+.Response Data Fields (ResponseBody)
+----
+반환되는 데이터의 정보
+----
+.Request HTTP Example
+----
+실제 요청하는 헤더의 예시
+----
+.Response HTTP Example
+----
+실제 반환되는 데이터의 예시
+----
+
+== 공통 반환 객체
+.SUCCESS
+반환 유형에 따라 page, list, data 중 하나의 필드만 반환됩니다.
+----
+{
+    "message":  "성공 메시지",
+    "exist": "성공 메시지를 노출 하는지에 대한 여부",
+    "page":  "페이징 반환 객체",
+    "list": "목록 반환 객체",
+    "data":  "반환 객체"
+}
+----
+.ERROR
+----
+{
+    "name": "에러 이름",
+    "code": "에러 코드",
+    "message":  "에러 메시지",
+    "exist": "에러 메시지를 노출 하는지에 대한 여부"
+}
+----
+
+== 에러 정의
+
+[NOTE]
+====
+아래 작성한 name 과 status 는 변하지 않습니다.
++++<br>+++
+아래 작성한 message 와 code 에 있는 값은 기본값이며
++++<br>+++
+프로젝트 또는 기능의 특징에 따라 바뀔 수 있습니다.
++++<br>+++
+바뀌게되면 해당 API 문서에 작업자가 작성을 할 예정이오니,
++++<br>+++
+만약 아래 정보와 다른 message 와 code 가 반환되는데
++++<br>+++
+API 문서에 작성되어 있지 않다면
++++<br>+++
+작업자에게 문의 요청드립니다.
+====
+----
+name: 에러 이름
+status: status 코드
+message: 에러 메세지
+code: 에러 코드
+----
+
+.ParameterException
+`파라미터 오류`
+----
+name: parameter
+status: 400
+message: [{0}] Parameter Exception
+code: EMPTY_PARAMETER
+----
+.DuplicateException
+`중복 데이터 오류`
+----
+name: duplicate
+status: 400
+message: [{0}] Duplicate Exception
+code: DATA_DUPLICATE
+----
+.UnAuthenticatedException
+`인증 오류`
+----
+name: un-authenticated
+status: 401
+message: Un Authenticated Exception
+code: AUTH
+----
+.NullPointerException
+`Null 데이터 오류`
+----
+name: null-pointer
+status: 500
+message: Null Pointer Exception
+code: EMPTY
+----
+.EntityNotFoundException
+`데이터를 찾을 수 없을 때 발생하는 오류`
+----
+name: entity-not-found
+status: 404
+message: Entity Not Found Exception
+code: EMPTY_DATA
+----
+.IOException
+`파일 입력 / 출력 오류`
+----
+name: io
+status: 500
+message: IO Exception
+code: IO
+----
+.FileSizeLimitExceededException
+`파일 사이즈가 제한 크기를 넘으면 발생하는 오류`
+----
+name: file-size-limit-exceeded
+status: 500
+message: File Size Limit Exceeded Exception
+code: IO_SIZE
+----
+.JsonProcessingException
+`Json 파싱 및 처리 오류`
+----
+name: json-processing
+status: 500
+message: Json Processing Exception
+code: JSON
+----
+.SQLSyntaxErrorException
+`SQL 오류`
+----
+name: sql-syntax-error
+status: 500
+message: SQL Syntax Error Exception
+code: SQL
+----
+.InvalidDataAccessResourceUsageException
+`데이터에 대한 접근이 잘못된 경우 발생하는 오류`
+----
+name: invalid-data-access-resource-usage
+status: 500
+message: Invalid Data Access Resource Usage Exception
+code: SQL_ACCESS
+----
+.DataIntegrityViolationException
+`데이터 제약 조건을 위반한 경우 발생하는 오류`
+----
+name: data-integrity-violation
+status: 500
+message: Data Integrity Violation Exception
+code: SQL_DATA
+----
+.BatchUpdateException
+`배치 갱신 조작중 에러가 발생한 경우 발생하는 오류`
+----
+name: batch-update
+status: 500
+message: Batch Update Exception
+code: SQL_UPDATE
+----
+.SQLGrammarException
+`SQL 문법 오류`
+----
+name: sql-grammar
+status: 500
+message: SQL Grammar Exception
+code: SQL_GRAMMAR
+----
+.ConstraintViolationException
+`데이터 유효성 검사가 실패하면 발생하는 오류`
+----
+name: constraint-violation
+status: 500
+message: Constraint Violation Exception
+code: SQL_VIOLATION
+----
+.DataException
+`데이터를 등록할때 오류가 발생하면 발생하는 오류`
+----
+name: data
+status: 500
+message: Data Exception
+code: DATA
+----
+.AccessDeniedException
+`접근 권한 오류`
+----
+name: access-denied
+status: 403
+message: Access Denied Exception
+code: ACCESS
+----
+.IllegalStateException
+`부적절한 Method 를 호출하면 발생하는 오류`
+----
+name: illegal-state
+status: 500
+message: Illegal State Exception
+code: STATUS
+----
+.IllegalArgumentException
+`부적절한 Parameter 때문에 발생하는 오류`
+----
+name: illegal-argument
+status: 500
+message: Illegal Argument Exception
+code: STATUS_ARGUMENT
+----
+.JwtException
+`JWT 토큰 오류`
+----
+name: jwt
+status: 500
+message: Jwt Exception
+code: TOKEN
+----
+.ExpiredJwtException
+`JWT 토큰이 만료되어 발생하는 오류`
+----
+name: expired-jwt
+status: 500
+message: Expired JWT Exception
+code: TOKEN_EXPIRED
+----
+.Exception
+`위 설명을 제외한 모든 오류`
+----
+name: error
+status: 400
+message: System Exception. Call Developer Right Now.
+code: ERROR
+----
+
+
+
+
+
+include::./lnb.adoc[]
