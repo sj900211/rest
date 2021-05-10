@@ -10,6 +10,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import run.freshr.annotation.DocsClass;
+import run.freshr.annotation.DocsMethod;
 import run.freshr.common.config.URIConfig;
 import run.freshr.common.extension.TestExtension;
 import run.freshr.domain.common.AttachDocs;
@@ -20,6 +22,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.mock.web.MockMultipartFile;
 
+@DocsClass(name = "common", description = "공통 관리")
 public class CommonControllerTest extends TestExtension {
 
 //    @Test
@@ -37,6 +40,7 @@ public class CommonControllerTest extends TestExtension {
 
   @Test
   @DisplayName("열거형 Data 조회 - All")
+  @DocsMethod(displayName = "열거형 Data 조회 - All")
   public void getEnumList() throws Exception {
     GET(URIConfig.uriCommonEnum)
         .andDo(print())
@@ -46,6 +50,7 @@ public class CommonControllerTest extends TestExtension {
 
   @Test
   @DisplayName("열거형 Data 조회 - One To Many")
+  @DocsMethod(displayName = "열거형 Data 조회 - One To Many", pathParameters = true)
   public void getEnum() throws Exception {
     GET(URIConfig.uriCommonEnumPick, UPPER_CAMEL.to(LOWER_HYPHEN, Gender.class.getSimpleName()).toLowerCase())
         .andDo(print())
@@ -62,6 +67,7 @@ public class CommonControllerTest extends TestExtension {
 
   @Test
   @DisplayName("파일 업로드")
+  @DocsMethod(displayName = "파일 업로드", requestParts = true, requestParameters = true, responseFields = true)
   public void createAttach() throws Exception {
     setAnonymous();
 
@@ -73,7 +79,7 @@ public class CommonControllerTest extends TestExtension {
         new MockMultipartFile("files", "test.png", "image/png", "EMOTION".getBytes())
     ).andDo(print())
         .andDo(docs(
-            RequestDocumentation.requestParts(AttachDocs.Request.createAttachFile()),
+            requestParts(AttachDocs.Request.createAttachFile()),
             requestParameters(AttachDocs.Request.createAttach()),
             responseFields(AttachDocs.Response.createAttach())
         ))
@@ -82,6 +88,7 @@ public class CommonControllerTest extends TestExtension {
 
   @Test
   @DisplayName("파일 존재 여부 확인")
+  @DocsMethod(displayName = "파일 존재 여부 확인", pathParameters = true, responseFields = true)
   public void existAttach() throws Exception {
     setAnonymous();
 
@@ -98,6 +105,7 @@ public class CommonControllerTest extends TestExtension {
 
   @Test
   @DisplayName("파일 상세 조회")
+  @DocsMethod(displayName = "파일 상세 조회", pathParameters = true, responseFields = true)
   public void getAttach() throws Exception {
     setAnonymous();
 
@@ -114,6 +122,7 @@ public class CommonControllerTest extends TestExtension {
 
   @Test
   @DisplayName("파일 삭제")
+  @DocsMethod(displayName = "파일 삭제", pathParameters = true)
   public void removeAttach() throws Exception {
     setAnonymous();
 
@@ -127,6 +136,7 @@ public class CommonControllerTest extends TestExtension {
 
   @Test
   @DisplayName("파일 다운로드")
+  @DocsMethod(displayName = "파일 다운로드", pathParameters = true)
   public void getAttachDownload() throws Exception {
     setAnonymous();
 
@@ -134,9 +144,7 @@ public class CommonControllerTest extends TestExtension {
 
     GET(URIConfig.uriCommonAttachIdDownload, attachIdList.get(0))
         .andDo(print())
-        .andDo(docs(
-            pathParameters(AttachDocs.Request.getAttach())
-        ))
+        .andDo(docs(pathParameters(AttachDocs.Request.getAttach())))
         .andExpect(status().isOk());
   }
 
@@ -149,13 +157,13 @@ public class CommonControllerTest extends TestExtension {
 
   @Test
   @DisplayName("CK 에디터 파일 업로드")
-  public void createAttachForEditorCK() throws Exception {
+  @DocsMethod(displayName = "CK 에디터 파일 업로드", requestParts = true)
+  public void createAttachForEditorCk() throws Exception {
     POST_MULTIPART(
         URIConfig.uriCommonEditorCK,
         null,
         new MockMultipartFile("upload", "test.png", "image/png", "NEXT CULTURE".getBytes())
-    )
-        .andDo(print())
+    ).andDo(print())
         .andDo(docs(requestParts(AttachDocs.Request.createAttachForEditorCK())))
         .andExpect(status().isOk());
   }

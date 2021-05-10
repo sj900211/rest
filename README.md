@@ -260,6 +260,15 @@ sudo service rest restart
 >>     <version>1.0.0.RELEASE</version>
 >> </dependency>
 >> ```
+> - ### Rest Docs Auto Maker 
+>> [가이드 문서](https://git.freshr.run/freshr/modules/docs/rest-docs)
+>> ``` xml
+>> <dependency>
+>>     <groupId>run.freshr</groupId>
+>>     <artifactId>rest-docs</artifactId>
+>>     <version>1.0.0.RELEASE</version>
+>> </dependency>
+>> ```
 > - ### AWS S3
 >> [가이드 문서](https://git.freshr.run/freshr/modules/util/aws-s3)
 >> ``` xml

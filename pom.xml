@@ -206,6 +206,12 @@
             <artifactId>attach</artifactId>
             <version>1.0.0.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>run.freshr</groupId>
+            <artifactId>rest-docs</artifactId>
+            <version>1.0.0.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,6 +1,7 @@
 package run.freshr.common.extension;
 
 import static java.util.Objects.isNull;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 import static run.freshr.DataRunner.accountIdList;
 import static run.freshr.DataRunner.managerIdList;
 import static run.freshr.DataRunner.superManagerId;
@@ -63,7 +64,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @AutoConfigureRestDocs
 @AutoConfigureMockMvc
 @Transactional
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestInstance(PER_CLASS)
 public class TestExtension {
 
   /**
@@ -107,8 +108,9 @@ public class TestExtension {
         "{class-name}/{method-name}", // 문서 경로 설정
         preprocessRequest( // Request 설정
             modifyUris()
-                .scheme("https")
-                .host("rest.freshr.kr"), // 문서에 노출되는 도메인 설정
+                .scheme("http")
+                .host("localhost")
+                .port(8900), // 문서에 노출되는 도메인 설정
             prettyPrint() // 정리해서 출력
         ),
         preprocessResponse(prettyPrint()) // Response 설정. 정리해서 출력

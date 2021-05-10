@@ -9,6 +9,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import run.freshr.annotation.DocsClass;
+import run.freshr.annotation.DocsMethod;
 import run.freshr.common.config.URIConfig;
 import run.freshr.common.extension.TestExtension;
 import run.freshr.domain.auth.enumeration.ManagerPrivilege;
@@ -20,10 +22,12 @@ import run.freshr.domain.setting.vo.SettingSearch;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DocsClass(name = "setting", description = "설정 관리")
 public class SettingControllerTest extends TestExtension {
 
   @Test
   @DisplayName("관리자 계정 등록")
+  @DocsMethod(displayName = "관리자 계정 등록", requestFields = true, responseFields = true)
   public void createManager() throws Exception {
     setSignedSuper();
 
@@ -40,7 +44,7 @@ public class SettingControllerTest extends TestExtension {
             .build()
     ).andDo(print())
         .andDo(docs(
-            PayloadDocumentation.requestFields(ManagerDocs.Request.createManager()),
+            requestFields(ManagerDocs.Request.createManager()),
             responseFields(ManagerDocs.Response.createManager())
         ))
         .andExpect(status().isOk());
@@ -48,6 +52,7 @@ public class SettingControllerTest extends TestExtension {
 
   @Test
   @DisplayName("관리자 계정 정보 조회 - Page")
+  @DocsMethod(displayName = "관리자 계정 정보 조회 - Page", requestParameters = true, responseFields = true)
   public void getManagerPage() throws Exception {
     setSignedSuper();
 
@@ -69,6 +74,7 @@ public class SettingControllerTest extends TestExtension {
 
   @Test
   @DisplayName("관리자 계정 정보 조회")
+  @DocsMethod(displayName = "관리자 계정 정보 조회", pathParameters = true, responseFields = true)
   public void getManager() throws Exception {
     setSignedSuper();
 
@@ -85,6 +91,7 @@ public class SettingControllerTest extends TestExtension {
 
   @Test
   @DisplayName("관리자 계정 정보 수정")
+  @DocsMethod(displayName = "관리자 계정 정보 수정", pathParameters = true, requestFields = true)
   public void updateManager() throws Exception {
     setSignedSuper();
 
@@ -108,6 +115,7 @@ public class SettingControllerTest extends TestExtension {
 
   @Test
   @DisplayName("탈퇴 처리")
+  @DocsMethod(displayName = "탈퇴 처리", pathParameters = true)
   public void removeManager() throws Exception {
     setSignedSuper();
 

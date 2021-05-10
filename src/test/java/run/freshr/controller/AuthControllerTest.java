@@ -1,30 +1,33 @@
 package run.freshr.controller;
 
-import static run.freshr.DataRunner.accountIdList;
-import static run.freshr.DataRunner.managerIdList;
-import static run.freshr.util.CryptoUtil.encryptBase64;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static run.freshr.DataRunner.accountIdList;
+import static run.freshr.DataRunner.managerIdList;
+import static run.freshr.util.CryptoUtil.encryptBase64;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import run.freshr.annotation.DocsClass;
+import run.freshr.annotation.DocsMethod;
 import run.freshr.common.config.URIConfig;
 import run.freshr.common.extension.TestExtension;
 import run.freshr.common.security.SecurityUtil;
 import run.freshr.common.util.SignUtil;
 import run.freshr.domain.auth.SignDocs;
-import run.freshr.domain.auth.enumeration.Role;
-import org.springframework.restdocs.payload.PayloadDocumentation;
 import run.freshr.domain.auth.dto.request.SignInRequest;
 import run.freshr.domain.auth.dto.request.SignPasswordRequest;
 import run.freshr.domain.auth.dto.request.SignUpdateRequest;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import run.freshr.domain.auth.enumeration.Role;
 
+@DocsClass(name = "auth", description = "권한 관리")
 public class AuthControllerTest extends TestExtension {
 
   @Test
   @DisplayName("Access 토큰 갱신")
+  @DocsMethod(displayName = "Access 토큰 갱신", responseFields = true)
   public void refreshToken() throws Exception {
     Long id = accountIdList.get(0);
 
@@ -38,12 +41,13 @@ public class AuthControllerTest extends TestExtension {
 
     POST_TOKEN(URIConfig.uriAuthToken, refreshToken)
         .andDo(print())
-        .andDo(docs(PayloadDocumentation.responseFields(SignDocs.Response.refreshToken())))
+        .andDo(docs(responseFields(SignDocs.Response.refreshToken())))
         .andExpect(status().isOk());
   }
 
   @Test
   @DisplayName("로그인")
+  @DocsMethod(displayName = "로그인", requestFields = true, responseFields = true)
   public void signIn() throws Exception {
     setAnonymous();
 
@@ -66,6 +70,7 @@ public class AuthControllerTest extends TestExtension {
 
   @Test
   @DisplayName("로그아웃")
+  @DocsMethod(displayName = "로그아웃")
   public void signOut() throws Exception {
     setSignedUser();
 
@@ -78,6 +83,7 @@ public class AuthControllerTest extends TestExtension {
 
   @Test
   @DisplayName("로그인한 계정 비밀번호 변경")
+  @DocsMethod(displayName = "로그인한 계정 비밀번호 변경", requestFields = true)
   public void updatePassword() throws Exception {
     setSignedUser();
 
@@ -97,6 +103,7 @@ public class AuthControllerTest extends TestExtension {
 
   @Test
   @DisplayName("로그인한 계정 정보 조회 - 관리자")
+  @DocsMethod(displayName = "로그인한 계정 정보 조회 - 관리자", responseFields = true)
   public void getInfoByManager() throws Exception {
     setSignedManager();
 
@@ -110,6 +117,7 @@ public class AuthControllerTest extends TestExtension {
 
   @Test
   @DisplayName("로그인한 계정 정보 조회 - 사용자")
+  @DocsMethod(displayName = "로그인한 계정 정보 조회 - 사용자", responseFields = true)
   public void getInfoByAccount() throws Exception {
     setSignedUser();
 
@@ -123,6 +131,7 @@ public class AuthControllerTest extends TestExtension {
 
   @Test
   @DisplayName("로그인한 계정 정보 수정 - 관리자")
+  @DocsMethod(displayName = "로그인한 계정 정보 수정 - 관리자", requestFields = true)
   public void updateInfoByManager() throws Exception {
     setSignedManager();
 
@@ -141,6 +150,7 @@ public class AuthControllerTest extends TestExtension {
 
   @Test
   @DisplayName("로그인한 계정 정보 수정 - 사용자")
+  @DocsMethod(displayName = "로그인한 계정 정보 수정 - 사용자", requestFields = true)
   public void updateInfoByAccount() throws Exception {
     setSignedManager();
 
@@ -159,6 +169,7 @@ public class AuthControllerTest extends TestExtension {
 
   @Test
   @DisplayName("로그인한 계정 탈퇴 처리")
+  @DocsMethod(displayName = "로그인한 계정 탈퇴 처리")
   public void removeInfo() throws Exception {
     setSignedUser();
 

@@ -9,6 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.Arrays;
+import run.freshr.annotation.DocsClass;
+import run.freshr.annotation.DocsMethod;
 import run.freshr.common.config.URIConfig;
 import run.freshr.common.extension.TestExtension;
 import run.freshr.domain.community.BoardDocs;
@@ -21,10 +23,12 @@ import run.freshr.domain.community.vo.CommunitySearch;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@DocsClass(name = "community", description = "커뮤니티 관리")
 public class CommunityControllerTest extends TestExtension {
 
   @Test
   @DisplayName("게시글 등록")
+  @DocsMethod(displayName = "게시글 등록", requestFields = true, responseFields = true)
   public void createBoard() throws Exception {
     setSignedUser();
 
@@ -65,7 +69,7 @@ public class CommunityControllerTest extends TestExtension {
             .build()
     ).andDo(print())
         .andDo(docs(
-            PayloadDocumentation.requestFields(BoardDocs.Request.createBoard()),
+            requestFields(BoardDocs.Request.createBoard()),
             responseFields(BoardDocs.Response.createBoard())
         ))
         .andExpect(status().isOk());
@@ -73,6 +77,7 @@ public class CommunityControllerTest extends TestExtension {
 
   @Test
   @DisplayName("게시글 정보 조회 - Page")
+  @DocsMethod(displayName = "게시글 정보 조회 - Page", requestParameters = true, responseFields = true)
   public void getBoardPage() throws Exception {
     setAnonymous();
 
@@ -94,6 +99,7 @@ public class CommunityControllerTest extends TestExtension {
 
   @Test
   @DisplayName("게시글 정보 조회")
+  @DocsMethod(displayName = "게시글 정보 조회", pathParameters = true, responseFields = true)
   public void getBoard() throws Exception {
     setAnonymous();
 
@@ -110,6 +116,7 @@ public class CommunityControllerTest extends TestExtension {
 
   @Test
   @DisplayName("게시글 정보 수정")
+  @DocsMethod(displayName = "게시글 정보 수정", pathParameters = true, requestFields = true)
   public void updateBoard() throws Exception {
     setSignedUser();
 
@@ -159,6 +166,7 @@ public class CommunityControllerTest extends TestExtension {
 
   @Test
   @DisplayName("게시글 삭제 처리")
+  @DocsMethod(displayName = "게시글 삭제 처리", pathParameters = true)
   public void removeBoard() throws Exception {
     setSignedUser();
 
@@ -172,6 +180,7 @@ public class CommunityControllerTest extends TestExtension {
 
   @Test
   @DisplayName("게시글 첨부파일 정보 조회 - List")
+  @DocsMethod(displayName = "게시글 첨부파일 정보 조회 - List", pathParameters = true, responseFields = true)
   public void getBoardAttachMappingList() throws Exception {
     setAnonymous();
 
