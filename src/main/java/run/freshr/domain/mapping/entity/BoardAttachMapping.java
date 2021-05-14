@@ -4,21 +4,22 @@ import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import run.freshr.common.config.DefaultColumnConfig;
-import run.freshr.common.extension.EntityExtension;
-import run.freshr.domain.common.entity.Attach;
-import run.freshr.annotation.ColumnComment;
-import run.freshr.annotation.TableComment;
-import run.freshr.domain.community.entity.Board;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import run.freshr.annotation.ColumnComment;
+import run.freshr.annotation.TableComment;
+import run.freshr.common.config.DefaultColumnConfig;
+import run.freshr.common.extension.EntityExtension;
+import run.freshr.domain.common.entity.Attach;
+import run.freshr.domain.community.entity.Board;
 
 @Entity
 @Table(name = "TB_MAP_BOARD_ATTACH")
@@ -30,12 +31,12 @@ import org.hibernate.annotations.DynamicUpdate;
 public class BoardAttachMapping extends EntityExtension {
 
   @ManyToOne(fetch = LAZY)
-  @JoinColumn(name = "boardId")
+  @JoinColumn(name = "boardId", foreignKey = @ForeignKey(name = "FK_BOARD_ATTACH_BOARD"))
   @ColumnComment("게시글")
   private Board board;
 
   @OneToOne(fetch = LAZY)
-  @JoinColumn(name = "attachId")
+  @JoinColumn(name = "attachId", foreignKey = @ForeignKey(name = "FK_BOARD_ATTACH_ATTACH"))
   @ColumnComment("첨부파일")
   private Attach attach;
 

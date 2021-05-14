@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import run.freshr.annotation.ColumnComment;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
+import run.freshr.annotation.ColumnComment;
 
 /**
  * The Class Entity extension.

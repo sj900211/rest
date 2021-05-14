@@ -4,17 +4,20 @@ import static lombok.AccessLevel.PROTECTED;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
-import run.freshr.domain.auth.enumeration.SignPrivilege;
-import run.freshr.annotation.ColumnComment;
-import run.freshr.annotation.TableComment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import run.freshr.annotation.ColumnComment;
+import run.freshr.annotation.TableComment;
+import run.freshr.domain.auth.enumeration.SignPrivilege;
 
 @Entity
 @Table(name = "TB_AUTH_ACCOUNT")
+@PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "FK_SIGN_ACCOUNT"))
 @TableComment(value = "권한 관리 > 사용자 계정 관리", extend = "Sign")
 @Getter
 @DynamicInsert

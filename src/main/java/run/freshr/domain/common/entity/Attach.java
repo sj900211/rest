@@ -1,35 +1,39 @@
 package run.freshr.domain.common.entity;
 
+import static lombok.AccessLevel.PROTECTED;
 import static run.freshr.common.util.RestUtil.checkProfile;
 import static run.freshr.util.BeanUtil.getBean;
-import static lombok.AccessLevel.PROTECTED;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import run.freshr.annotation.ColumnComment;
-import run.freshr.annotation.TableComment;
-import run.freshr.common.extension.EntityExtension;
-import run.freshr.service.PhysicalAttachService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import run.freshr.annotation.ColumnComment;
+import run.freshr.annotation.TableComment;
+import run.freshr.common.extension.EntityExtension;
+import run.freshr.service.PhysicalAttachService;
 
 /**
  * @apiNote AWS S3 업로드로 기능 구성
  * @since 2020 -08-10 @author 류성재
  */
 @Entity
-@Table(name = "TB_COM_ATTACH")
+@Table(
+    name = "TB_COM_ATTACH",
+    indexes = @Index(name = "IDX_FLAG", columnList = "useFlag, delFlag")
+)
+@TableComment(value = "공통 관리 > 첨부파일 관리", extend = "EntityExtension")
 @Getter
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor(access = PROTECTED)
-@TableComment(value = "공통 관리 > 첨부파일 관리", extend = "EntityExtension")
 public class Attach extends EntityExtension {
 
   @ColumnComment("파일 유형")

@@ -5,6 +5,8 @@ import static lombok.AccessLevel.PROTECTED;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import run.freshr.domain.auth.enumeration.ManagerPrivilege;
 import run.freshr.domain.auth.enumeration.SignPrivilege;
@@ -17,6 +19,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 @Entity
 @Table(name = "TB_AUTH_MANAGER")
+@PrimaryKeyJoinColumn(foreignKey = @ForeignKey(name = "FK_SIGN_MANAGER"))
 @TableComment(value = "권한 관리 > 관리자 계정 관리", extend = "Sign")
 @Getter
 @DynamicInsert

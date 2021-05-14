@@ -7,30 +7,35 @@ import static org.springframework.util.StringUtils.hasLength;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import run.freshr.common.config.DefaultColumnConfig;
-import run.freshr.common.extension.EntityExtension;
-import run.freshr.domain.auth.entity.Account;
-import run.freshr.domain.mapping.entity.BoardAttachMapping;
-import run.freshr.annotation.ColumnComment;
-import run.freshr.annotation.TableComment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import run.freshr.annotation.ColumnComment;
+import run.freshr.annotation.TableComment;
+import run.freshr.common.config.DefaultColumnConfig;
+import run.freshr.common.extension.EntityExtension;
+import run.freshr.domain.auth.entity.Account;
+import run.freshr.domain.mapping.entity.BoardAttachMapping;
 
 @Entity
-@Table(name = "TB_CMNT_BOARD")
+@Table(
+    name = "TB_CMNT_BOARD",
+    indexes = @Index(name = "IDX_FLAG", columnList = "useFlag, delFlag")
+)
+@TableComment(value = "커뮤니티 관리 > 게시글 관리", extend = "EntityExtension")
 @Getter
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor(access = PROTECTED)
-@TableComment(value = "커뮤니티 관리 > 게시글 관리", extend = "EntityExtension")
 public class Board extends EntityExtension {
 
   @Column(
@@ -50,12 +55,12 @@ public class Board extends EntityExtension {
   private Integer hit;
 
   @ManyToOne(fetch = LAZY)
-  @JoinColumn(name = "creatorId")
+  @JoinColumn(name = "creatorId", foreignKey = @ForeignKey(name = "FK_BOARD_CREATOR"))
   @ColumnComment("작성자")
   private Account creator;
 
   @ManyToOne(fetch = LAZY)
-  @JoinColumn(name = "updaterId")
+  @JoinColumn(name = "updaterId", foreignKey = @ForeignKey(name = "FK_BOARD_UPDATER"))
   @ColumnComment("마지막 수정자")
   private Account updater;
 

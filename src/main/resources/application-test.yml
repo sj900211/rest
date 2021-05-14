@@ -2,7 +2,7 @@ spring:
   jpa:
     show-sql: true
     database: h2
-    database-platform: H2
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: create
     properties:

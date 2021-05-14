@@ -10,19 +10,28 @@ import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.Table;
-import run.freshr.domain.auth.enumeration.SignPrivilege;
-import run.freshr.annotation.ColumnComment;
-import run.freshr.annotation.TableComment;
-import run.freshr.common.extension.EntityExtension;
+import javax.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import run.freshr.annotation.ColumnComment;
+import run.freshr.annotation.TableComment;
+import run.freshr.common.extension.EntityExtension;
+import run.freshr.domain.auth.enumeration.SignPrivilege;
 
 @Entity
-@Table(name = "TB_AUTH_SIGN")
+@Table(
+    name = "TB_AUTH_SIGN",
+    uniqueConstraints = @UniqueConstraint(name = "UK_SIGN_USERNAME", columnNames = {"username"}),
+    indexes = {
+        @Index(name = "IDX_PRIVILEGE", columnList = "privilege"),
+        @Index(name = "IDX_FLAG", columnList = "useFlag, delFlag")
+    }
+)
 @TableComment(value = "권한 관리 > 계정 관리", extend = "EntityExtension")
 @Getter
 @DynamicInsert
@@ -37,11 +46,7 @@ public class Sign extends EntityExtension {
   @ColumnComment("계정 유형")
   protected SignPrivilege privilege;
 
-  @Column(
-      nullable = false,
-      length = 100,
-      unique = true
-  )
+  @Column(nullable = false, length = 100)
   @ColumnComment("아이디")
   protected String username;
 
