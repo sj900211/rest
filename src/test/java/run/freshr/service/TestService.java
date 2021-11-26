@@ -9,16 +9,16 @@ import run.freshr.domain.auth.entity.Manager;
 import run.freshr.domain.auth.enumeration.Role;
 import run.freshr.domain.auth.redis.AuthAccess;
 import run.freshr.domain.auth.redis.AuthRefresh;
-import run.freshr.domain.auth.service.AccountService;
-import run.freshr.domain.auth.service.AuthAccessService;
-import run.freshr.domain.auth.service.AuthRefreshService;
-import run.freshr.domain.auth.service.ManagerService;
+import run.freshr.domain.auth.service.AccountUnit;
+import run.freshr.domain.auth.service.AuthAccessUnit;
+import run.freshr.domain.auth.service.AuthRefreshUnit;
+import run.freshr.domain.auth.service.ManagerUnit;
 import run.freshr.domain.common.entity.Attach;
-import run.freshr.domain.common.service.AttachService;
+import run.freshr.domain.common.service.AttachUnit;
 import run.freshr.domain.community.entity.Board;
-import run.freshr.domain.community.service.BoardService;
+import run.freshr.domain.community.service.BoardUnit;
 import run.freshr.domain.mapping.entity.BoardAttachMapping;
-import run.freshr.domain.mapping.service.BoardAttachMappingService;
+import run.freshr.domain.mapping.service.BoardAttachMappingUnit;
 import run.freshr.mapper.EnumMapper;
 import run.freshr.mapper.EnumValue;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +54,7 @@ public class TestService {
   /**
    * The Auth access service
    */
-  private final AuthAccessService authAccessService;
+  private final AuthAccessUnit authAccessUnit;
 
   //      ___      __    __  .___________. __    __
   //     /   \    |  |  |  | |           ||  |  |  |
@@ -65,35 +65,35 @@ public class TestService {
   /**
    * The Auth refresh service
    */
-  private final AuthRefreshService authRefreshService;
+  private final AuthRefreshUnit authRefreshUnit;
   // .___  ___.      ___      .__   __.      ___       _______  _______ .______
   // |   \/   |     /   \     |  \ |  |     /   \     /  _____||   ____||   _  \
   // |  \  /  |    /  ^  \    |   \|  |    /  ^  \   |  |  __  |  |__   |  |_)  |
   // |  |\/|  |   /  /_\  \   |  . `  |   /  /_\  \  |  | |_ | |   __|  |      /
   // |  |  |  |  /  _____  \  |  |\   |  /  _____  \ |  |__| | |  |____ |  |\  \----.
   // |__|  |__| /__/     \__\ |__| \__| /__/     \__\ \______| |_______|| _| `._____|
-  private final ManagerService managerService;
+  private final ManagerUnit managerUnit;
   //      ___       ______   ______   ______    __    __  .__   __. .___________.
   //     /   \     /      | /      | /  __  \  |  |  |  | |  \ |  | |           |
   //    /  ^  \   |  ,----'|  ,----'|  |  |  | |  |  |  | |   \|  | `---|  |----`
   //   /  /_\  \  |  |     |  |     |  |  |  | |  |  |  | |  . `  |     |  |
   //  /  _____  \ |  `----.|  `----.|  `--'  | |  `--'  | |  |\   |     |  |
   // /__/     \__\ \______| \______| \______/   \______/  |__| \__|     |__|
-  private final AccountService accountService;
+  private final AccountUnit accountUnit;
   //      ___   .___________.___________.    ___       ______  __    __
   //     /   \  |           |           |   /   \     /      ||  |  |  |
   //    /  ^  \ `---|  |----`---|  |----`  /  ^  \   |  ,----'|  |__|  |
   //   /  /_\  \    |  |        |  |      /  /_\  \  |  |     |   __   |
   //  /  _____  \   |  |        |  |     /  _____  \ |  `----.|  |  |  |
   // /__/     \__\  |__|        |__|    /__/     \__\ \______||__|  |__|
-  private final AttachService attachService;
+  private final AttachUnit attachUnit;
   // .______     ______        ___      .______       _______
   // |   _  \   /  __  \      /   \     |   _  \     |       \
   // |  |_)  | |  |  |  |    /  ^  \    |  |_)  |    |  .--.  |
   // |   _  <  |  |  |  |   /  /_\  \   |      /     |  |  |  |
   // |  |_)  | |  `--'  |  /  _____  \  |  |\  \----.|  '--'  |
   // |______/   \______/  /__/     \__\ | _| `._____||_______/
-  private final BoardService boardService;
+  private final BoardUnit boardUnit;
   // .______     ______        ___      .______       _______
   // |   _  \   /  __  \      /   \     |   _  \     |       \
   // |  |_)  | |  |  |  |    /  ^  \    |  |_)  |    |  .--.  |
@@ -112,7 +112,7 @@ public class TestService {
   // |  |\/|  |   /  /_\  \   |   ___/  |   ___/  |  | |  . `  | |  | |_ |
   // |  |  |  |  /  _____  \  |  |      |  |      |  | |  |\   | |  |__| |
   // |__|  |__| /__/     \__\ | _|      | _|      |__| |__| \__|  \______|
-  private final BoardAttachMappingService boardAttachMappingService;
+  private final BoardAttachMappingUnit boardAttachMappingUnit;
 
   /**
    * Gets enum all.
@@ -147,9 +147,9 @@ public class TestService {
     SignUtil.signedRefresh.set(refreshToken);
 
     // 토큰 등록
-    authAccessService.save(AuthAccess.createRedis(accessToken, id, role));
-    authRefreshService
-        .save(AuthRefresh.createRedis(refreshToken, authAccessService.get(accessToken)));
+    authAccessUnit.save(AuthAccess.createRedis(accessToken, id, role));
+    authRefreshUnit
+        .save(AuthRefresh.createRedis(refreshToken, authAccessUnit.get(accessToken)));
   }
 
   /**
@@ -163,7 +163,7 @@ public class TestService {
    * @since 2021. 2. 25. 오후 5:40:13
    */
   public void createAccess(String accessToken, Long id, Role role) {
-    authAccessService.save(AuthAccess.createRedis(accessToken, id, role));
+    authAccessUnit.save(AuthAccess.createRedis(accessToken, id, role));
   }
 
   /**
@@ -176,7 +176,7 @@ public class TestService {
    * @since 2021. 2. 25. 오후 5:40:13
    */
   public AuthAccess getAccess(String id) {
-    return authAccessService.get(id);
+    return authAccessUnit.get(id);
   }
 
   /**
@@ -189,7 +189,7 @@ public class TestService {
    * @since 2021. 2. 25. 오후 5:40:13
    */
   public void createRefresh(String refreshToken, String access) {
-    authRefreshService.save(AuthRefresh.createRedis(refreshToken, getAccess(access)));
+    authRefreshUnit.save(AuthRefresh.createRedis(refreshToken, getAccess(access)));
   }
 
   /**
@@ -203,7 +203,7 @@ public class TestService {
    * @since 2021. 3. 16. 오후 3:25:09
    */
   public long createSuper(String username, String name) {
-    return managerService
+    return managerUnit
         .create(Manager.createSuper(username, passwordEncoder.encode("1234"), name));
   }
 
@@ -218,7 +218,7 @@ public class TestService {
    * @since 2021. 3. 16. 오후 3:25:09
    */
   public long createManager(String username, String name) {
-    return managerService
+    return managerUnit
         .create(Manager.createManager(username, passwordEncoder.encode("1234"), name));
   }
 
@@ -232,7 +232,7 @@ public class TestService {
    * @since 2021. 3. 16. 오후 3:25:09
    */
   public Manager getManager(long id) {
-    return managerService.get(id);
+    return managerUnit.get(id);
   }
 
   /**
@@ -246,7 +246,7 @@ public class TestService {
    * @since 2021. 3. 16. 오후 3:25:09
    */
   public long createAccount(String username, String name) {
-    return accountService
+    return accountUnit
         .create(Account.createEntity(username, passwordEncoder.encode("1234"), name));
   }
 
@@ -260,11 +260,11 @@ public class TestService {
    * @since 2021. 3. 16. 오후 3:25:09
    */
   public Account getAccount(long id) {
-    return accountService.get(id);
+    return accountUnit.get(id);
   }
 
   public long createAttach(String filename, String path) {
-    return attachService.create(Attach.createEntity(
+    return attachUnit.create(Attach.createEntity(
         "image/png",
         filename + ".png",
         path + "/" + filename + ".png",
@@ -275,11 +275,11 @@ public class TestService {
   }
 
   public Attach getAttach(long id) {
-    return attachService.get(id);
+    return attachUnit.get(id);
   }
 
   public long createBoard(String title, String content, Account account) {
-    return boardService.create(Board.createEntity(
+    return boardUnit.create(Board.createEntity(
         title,
         content,
         account
@@ -287,11 +287,11 @@ public class TestService {
   }
 
   public Board getBoard(long id) {
-    return boardService.get(id);
+    return boardUnit.get(id);
   }
 
   public long createBoardAttachMapping(Board board, Attach attach, int sort) {
-    return boardAttachMappingService.create(BoardAttachMapping.createEntity(
+    return boardAttachMappingUnit.create(BoardAttachMapping.createEntity(
         board,
         attach,
         sort
@@ -299,11 +299,11 @@ public class TestService {
   }
 
   public BoardAttachMapping getBoardAttachMapping(long id) {
-    return boardAttachMappingService.get(id);
+    return boardAttachMappingUnit.get(id);
   }
 
   public List<BoardAttachMapping> getBoardAttachMappingAll(Board board) {
-    return boardAttachMappingService.getList(board);
+    return boardAttachMappingUnit.getList(board);
   }
 
 }

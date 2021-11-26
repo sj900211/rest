@@ -6,7 +6,6 @@ import static java.text.MessageFormat.format;
 import static java.util.Optional.ofNullable;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import run.freshr.common.config.CustomConfig;
@@ -14,8 +13,8 @@ import run.freshr.common.security.SecurityUtil;
 import run.freshr.domain.auth.entity.Account;
 import run.freshr.domain.auth.entity.Manager;
 import run.freshr.domain.auth.enumeration.Role;
-import run.freshr.domain.auth.service.AccountService;
-import run.freshr.domain.auth.service.ManagerService;
+import run.freshr.domain.auth.service.AccountUnit;
+import run.freshr.domain.auth.service.ManagerUnit;
 import run.freshr.common.model.ResponseModel;
 import run.freshr.response.ExceptionsResponse;
 import lombok.RequiredArgsConstructor;
@@ -63,11 +62,11 @@ public class RestUtil {
   /**
    * The constant accountService
    */
-  private static AccountService accountService;
+  private static AccountUnit accountUnit;
   /**
    * The constant managerService
    */
-  private static ManagerService managerService;
+  private static ManagerUnit managerUnit;
 
   static {
     objectMapper = new ObjectMapper();
@@ -79,8 +78,8 @@ public class RestUtil {
    * @param environment        the environment
    * @param customConfig       the custom config
    * @param exceptionsResponse the exceptions response
-   * @param managerService     the manager service
-   * @param accountService     the account service
+   * @param managerUnit     the manager service
+   * @param accountUnit     the account service
    * @author [류성재]
    * @implNote
    * @since 2021. 3. 16. 오후 12:08:29
@@ -90,13 +89,13 @@ public class RestUtil {
       Environment environment,
       CustomConfig customConfig,
       ExceptionsResponse exceptionsResponse,
-      ManagerService managerService,
-      AccountService accountService) {
+      ManagerUnit managerUnit,
+      AccountUnit accountUnit) {
     RestUtil.environment = environment;
     RestUtil.customConfig = customConfig;
     RestUtil.exceptionsResponse = exceptionsResponse;
-    RestUtil.managerService = managerService;
-    RestUtil.accountService = accountService;
+    RestUtil.managerUnit = managerUnit;
+    RestUtil.accountUnit = accountUnit;
   }
 
   /**
@@ -640,7 +639,7 @@ public class RestUtil {
    * @since 2021. 3. 16. 오후 12:08:30
    */
   public static Account getSignedAccount() {
-    return accountService.get(getSignedId());
+    return accountUnit.get(getSignedId());
   }
 
   /**
@@ -652,7 +651,7 @@ public class RestUtil {
    * @since 2021. 3. 16. 오후 12:08:30
    */
   public static Manager getSignedManager() {
-    return managerService.get(getSignedId());
+    return managerUnit.get(getSignedId());
   }
 
   /**

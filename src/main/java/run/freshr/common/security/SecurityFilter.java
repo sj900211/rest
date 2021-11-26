@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import run.freshr.common.model.ResponseModel;
 import run.freshr.domain.auth.enumeration.Role;
 import run.freshr.domain.auth.redis.AuthAccess;
-import run.freshr.domain.auth.service.AuthAccessService;
+import run.freshr.domain.auth.service.AuthAccessUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,7 +43,7 @@ public class SecurityFilter extends OncePerRequestFilter {
   /**
    * The Auth access service
    */
-  private final AuthAccessService authAccessService;
+  private final AuthAccessUnit authAccessUnit;
 
   /**
    * The Object mapper
@@ -58,7 +58,7 @@ public class SecurityFilter extends OncePerRequestFilter {
    * @since 2021. 2. 25. 오후 5:10:44
    */
   public SecurityFilter() {
-    this.authAccessService = getBean(AuthAccessService.class);
+    this.authAccessUnit = getBean(AuthAccessUnit.class);
     this.objectMapper = getBean(ObjectMapper.class);
   }
 
@@ -86,7 +86,7 @@ public class SecurityFilter extends OncePerRequestFilter {
       if (hasLength(jwt)) { // Bearer 토큰이 있는 경우
         String accessToken = jwt.replace(SecurityUtil.BEARER_PREFIX, ""); // Access 토큰 조회
 
-        if (!authAccessService.exists(accessToken)) { // 발급한 토큰인지 체크
+        if (!authAccessUnit.exists(accessToken)) { // 발급한 토큰인지 체크
           throw new ExpiredJwtException(null, null, "error validate token");
         }
 
@@ -94,7 +94,7 @@ public class SecurityFilter extends OncePerRequestFilter {
           throw new ExpiredJwtException(null, null, "error validate token");
         }
 
-        AuthAccess access = authAccessService.get(accessToken); // 데이터 조회
+        AuthAccess access = authAccessUnit.get(accessToken); // 데이터 조회
         id = access.getSignId(); // 일련 번호 조회
         role = access.getRole(); // 권한 조회
       }

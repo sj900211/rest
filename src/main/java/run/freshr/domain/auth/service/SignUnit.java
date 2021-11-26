@@ -1,6 +1,7 @@
 package run.freshr.domain.auth.service;
 
 import javax.persistence.EntityNotFoundException;
+import run.freshr.annotation.Unit;
 import run.freshr.domain.auth.entity.Sign;
 import run.freshr.domain.auth.repository.SignRepository;
 import lombok.RequiredArgsConstructor;
@@ -8,16 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * The Class Sign service.
+ * The Class Sign unit.
  *
  * @author [류성재]
  * @implNote 권한 관리 > 계정 관리 Service
  * @since 2021. 3. 16. 오후 2:31:28
  */
-@Service
+@Unit
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class SignService {
+public class SignUnit {
 
   /**
    * The Repository

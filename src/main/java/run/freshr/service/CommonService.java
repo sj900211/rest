@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import run.freshr.common.util.RestUtil;
 import run.freshr.domain.common.entity.Attach;
-import run.freshr.domain.common.service.AttachService;
+import run.freshr.domain.common.service.AttachUnit;
 import run.freshr.domain.common.dto.request.AttachCreateRequest;
 import run.freshr.domain.common.dto.response.AttachResponse;
 import run.freshr.domain.common.dto.response.IdResponse;
@@ -38,7 +38,7 @@ public class CommonService {
   /**
    * The Attach service
    */
-  private final AttachService attachService;
+  private final AttachUnit attachUnit;
 
   /** AWS S3 Settings
    * private final S3Service s3Service;
@@ -109,7 +109,7 @@ public class CommonService {
        */
       PhysicalAttachResultResponse uploadResult = physicalAttachService.upload(directory, file);
 
-      Long id = attachService.create(
+      Long id = attachUnit.create(
           Attach.createEntity(
               contentType,
               filename,
@@ -136,7 +136,7 @@ public class CommonService {
    * @since 2021. 3. 16. 오후 2:56:26
    */
   public ResponseEntity<?> existAttach(Long id) {
-    boolean flag = attachService.exists(id);
+    boolean flag = attachUnit.exists(id);
 
     return ok(IsResponse.builder().is(flag).build());
   }
@@ -151,7 +151,7 @@ public class CommonService {
    * @since 2021. 3. 16. 오후 2:56:26
    */
   public ResponseEntity<?> getAttach(Long id) {
-    Attach attach = attachService.get(id);
+    Attach attach = attachUnit.get(id);
 
     return ok(MapperUtil.map(attach, AttachResponse.class));
   }
@@ -167,7 +167,7 @@ public class CommonService {
    */
   @Transactional
   public ResponseEntity<?> removeAttach(Long id) {
-    Attach entity = attachService.get(id);
+    Attach entity = attachUnit.get(id);
 
     entity.remove();
 
@@ -188,7 +188,7 @@ public class CommonService {
       return RestUtil.ok();
     }
 
-    Attach attach = attachService.get(id);
+    Attach attach = attachUnit.get(id);
 
     /** AWS S3 Settings
      * return s3Service.download(attach.getFilename(), attach.getPath());

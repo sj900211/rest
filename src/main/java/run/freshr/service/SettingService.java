@@ -2,24 +2,24 @@ package run.freshr.service;
 
 import static run.freshr.common.util.RestUtil.error;
 import static run.freshr.common.util.RestUtil.ok;
-import static run.freshr.util.CryptoUtil.decryptBase64;
+import static run.freshr.util.CryptoUtil.decodeBase64;
 
-import run.freshr.common.util.RestUtil;
-import run.freshr.domain.auth.entity.Manager;
-import run.freshr.domain.auth.service.ManagerService;
-import run.freshr.domain.auth.service.SignService;
-import run.freshr.domain.auth.dto.request.ManagerCreateRequest;
-import run.freshr.domain.auth.dto.request.ManagerUpdateRequest;
-import run.freshr.domain.auth.dto.response.ManagerResponse;
-import run.freshr.domain.common.dto.response.IdResponse;
-import run.freshr.domain.setting.vo.SettingSearch;
-import run.freshr.util.MapperUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import run.freshr.common.util.RestUtil;
+import run.freshr.domain.auth.dto.request.ManagerCreateRequest;
+import run.freshr.domain.auth.dto.request.ManagerUpdateRequest;
+import run.freshr.domain.auth.dto.response.ManagerResponse;
+import run.freshr.domain.auth.entity.Manager;
+import run.freshr.domain.auth.service.ManagerUnit;
+import run.freshr.domain.auth.service.SignUnit;
+import run.freshr.domain.common.dto.response.IdResponse;
+import run.freshr.domain.setting.vo.SettingSearch;
+import run.freshr.util.MapperUtil;
 
 /**
  * The Class Setting service.
@@ -36,11 +36,11 @@ public class SettingService {
   /**
    * The Sign service
    */
-  private final SignService signService;
+  private final SignUnit signUnit;
   /**
    * The Manager service
    */
-  private final ManagerService managerService;
+  private final ManagerUnit managerUnit;
 
   /**
    * The Password encoder
@@ -65,17 +65,17 @@ public class SettingService {
    */
   @Transactional
   public ResponseEntity<?> createManager(ManagerCreateRequest dto) {
-    String username = decryptBase64(dto.getUsername());
+    String username = decodeBase64(dto.getUsername());
 
-    if (signService.exists(username)) {
+    if (signUnit.exists(username)) {
       return error(RestUtil.getExceptions().getDuplicate(), "already username: " + username);
     }
 
-    long id = managerService.create(Manager.createEntity(
+    long id = managerUnit.create(Manager.createEntity(
         dto.getPrivilege(),
         username,
-        passwordEncoder.encode(decryptBase64(dto.getPassword())),
-        decryptBase64(dto.getName())
+        passwordEncoder.encode(decodeBase64(dto.getPassword())),
+        decodeBase64(dto.getName())
     ));
 
     return ok(IdResponse.builder().id(id).build());
@@ -91,7 +91,7 @@ public class SettingService {
    * @since 2021. 3. 16. 오후 3:08:29
    */
   public ResponseEntity<?> getManagerPage(SettingSearch search) {
-    Page<ManagerResponse> page = managerService
+    Page<ManagerResponse> page = managerUnit
         .getPage(search)
         .map(manager -> MapperUtil.map(manager, ManagerResponse.class));
 
@@ -108,7 +108,7 @@ public class SettingService {
    * @since 2021. 3. 16. 오후 3:08:29
    */
   public ResponseEntity<?> getManager(Long id) {
-    ManagerResponse data = MapperUtil.map(managerService.get(id), ManagerResponse.class);
+    ManagerResponse data = MapperUtil.map(managerUnit.get(id), ManagerResponse.class);
 
     return ok(data);
   }
@@ -124,11 +124,11 @@ public class SettingService {
    */
   @Transactional
   public ResponseEntity<?> updateManager(Long id, ManagerUpdateRequest dto) {
-    Manager entity = managerService.get(id);
+    Manager entity = managerUnit.get(id);
 
     entity.updateEntity(
         dto.getPrivilege(),
-        decryptBase64(dto.getName())
+        decodeBase64(dto.getName())
     );
 
     return RestUtil.ok();
@@ -145,7 +145,7 @@ public class SettingService {
    */
   @Transactional
   public ResponseEntity<?> removeManager(Long id) {
-    Manager entity = managerService.get(id);
+    Manager entity = managerUnit.get(id);
 
     entity.removeEntity();
 

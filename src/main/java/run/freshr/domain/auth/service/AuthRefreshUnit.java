@@ -3,24 +3,24 @@ package run.freshr.domain.auth.service;
 import static java.util.Objects.isNull;
 
 import javax.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
+import run.freshr.annotation.Unit;
 import run.freshr.domain.auth.redis.AuthAccess;
 import run.freshr.domain.auth.redis.AuthRefresh;
 import run.freshr.domain.auth.repository.AuthRefreshRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
- * The Class Auth refresh service.
+ * The Class Auth refresh unit.
  *
  * @author [류성재]
  * @implNote Refresh 토큰 Service
  * @since 2020 -08-10 @author 류성재
  */
-@Service
+@Unit
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AuthRefreshService {
+public class AuthRefreshUnit {
 
   /**
    * The Repository

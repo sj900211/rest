@@ -3,7 +3,7 @@ package run.freshr.common.security;
 import static io.jsonwebtoken.SignatureAlgorithm.HS512;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
-import static run.freshr.util.CryptoUtil.encryptBase64;
+import static run.freshr.util.CryptoUtil.encodeBase64;
 import static run.freshr.util.CryptoUtil.encryptSha256;
 
 import io.jsonwebtoken.Claims;
@@ -35,7 +35,7 @@ public class SecurityUtil {
    * SHA256 으로 암호화 HS512 로 암호화할 때 짧은 SALT 값은 오류가 발생하기 때문에 암호화를 진행해서 긴 문자를 생성
    */
   public static final String JWT_SHA = encryptSha256(JWT_VARIABLE);
-  public static final byte[] JWT_BYTE = encryptBase64(JWT_SHA).getBytes(UTF_8); // JWT 암호화 키 Byte
+  public static final byte[] JWT_BYTE = encodeBase64(JWT_SHA).getBytes(UTF_8); // JWT 암호화 키 Byte
   public static final Key JWT_KEY = new SecretKeySpec(JWT_BYTE, HS512.getJcaName()); // Key 생성
   public static final Integer EXPIRATION_ACCESS = 1000 * 60 * 15; // Access Token 만료 시간
   public static final String AUTHORIZATION_STRING = "Authorization";

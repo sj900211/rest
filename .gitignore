@@ -37,3 +37,6 @@ build/
 
 ### Physical Attach ###
 upload/
+
+### Ascii docs ###
+src/main/asciidoc/*.adoc

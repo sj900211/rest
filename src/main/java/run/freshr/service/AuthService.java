@@ -5,7 +5,7 @@ import static java.time.LocalDateTime.now;
 import static java.util.Optional.ofNullable;
 import static run.freshr.common.util.RestUtil.error;
 import static run.freshr.common.util.RestUtil.ok;
-import static run.freshr.util.CryptoUtil.decryptBase64;
+import static run.freshr.util.CryptoUtil.decodeBase64;
 import static run.freshr.util.MapperUtil.map;
 
 import java.time.LocalDateTime;
@@ -17,9 +17,9 @@ import run.freshr.domain.auth.entity.Sign;
 import run.freshr.domain.auth.enumeration.Role;
 import run.freshr.domain.auth.redis.AuthAccess;
 import run.freshr.domain.auth.redis.AuthRefresh;
-import run.freshr.domain.auth.service.AuthAccessService;
-import run.freshr.domain.auth.service.AuthRefreshService;
-import run.freshr.domain.auth.service.SignService;
+import run.freshr.domain.auth.service.AuthAccessUnit;
+import run.freshr.domain.auth.service.AuthRefreshUnit;
+import run.freshr.domain.auth.service.SignUnit;
 import run.freshr.domain.auth.dto.request.SignInRequest;
 import run.freshr.domain.auth.dto.request.SignPasswordRequest;
 import run.freshr.domain.auth.dto.request.SignUpdateRequest;
@@ -48,16 +48,16 @@ public class AuthService {
   /**
    * The Manager service
    */
-  private final SignService signService;
+  private final SignUnit signUnit;
 
   /**
    * The Auth access service
    */
-  private final AuthAccessService authAccessService;
+  private final AuthAccessUnit authAccessUnit;
   /**
    * The Auth refresh service
    */
-  private final AuthRefreshService authRefreshService;
+  private final AuthRefreshUnit authRefreshUnit;
 
   /**
    * The Password encoder
@@ -75,13 +75,13 @@ public class AuthService {
    */
   @Transactional
   public ResponseEntity<?> signIn(SignInRequest dto) {
-    String username = decryptBase64(dto.getUsername());
+    String username = decodeBase64(dto.getUsername());
 
-    if (!signService.exists(username)) {
+    if (!signUnit.exists(username)) {
       return error(RestUtil.getExceptions().getEntityNotFound());
     }
 
-    Sign entity = signService.get(username);
+    Sign entity = signUnit.get(username);
 
     if (entity.getDelFlag()) {
       return error(RestUtil.getExceptions().getEntityNotFound());
@@ -91,7 +91,7 @@ public class AuthService {
       return error(RestUtil.getExceptions().getUnAuthenticated());
     }
 
-    if (!passwordEncoder.matches(decryptBase64(dto.getPassword()), entity.getPassword())) {
+    if (!passwordEncoder.matches(decodeBase64(dto.getPassword()), entity.getPassword())) {
       return error(RestUtil.getExceptions().getUnAuthenticated());
     }
 
@@ -104,8 +104,8 @@ public class AuthService {
     String refreshToken = SecurityUtil.createRefreshToken(id);
 
     // 토큰 등록
-    authAccessService.save(AuthAccess.createRedis(accessToken, id, entity.getPrivilege().getRole()));
-    authRefreshService.save(AuthRefresh.createRedis(refreshToken, authAccessService.get(accessToken)));
+    authAccessUnit.save(AuthAccess.createRedis(accessToken, id, entity.getPrivilege().getRole()));
+    authRefreshUnit.save(AuthRefresh.createRedis(refreshToken, authAccessUnit.get(accessToken)));
 
     SignInResponse response = SignInResponse.builder()
         .accessToken(accessToken)
@@ -129,11 +129,11 @@ public class AuthService {
     String jwt = ofNullable(request.getHeader("Authorization")).orElse("");
     String token = jwt.replace("Bearer ", "");
 
-    if (authAccessService.exists(token)) {
-      authRefreshService.delete(authAccessService.get(token));
+    if (authAccessUnit.exists(token)) {
+      authRefreshUnit.delete(authAccessUnit.get(token));
     }
 
-    authAccessService.delete(token);
+    authAccessUnit.delete(token);
 
     return RestUtil.ok();
   }
@@ -149,13 +149,13 @@ public class AuthService {
    */
   @Transactional
   public ResponseEntity<?> updatePassword(SignPasswordRequest dto) {
-    Sign entity = signService.get(RestUtil.getSignedId());
+    Sign entity = signUnit.get(RestUtil.getSignedId());
 
-    if (!passwordEncoder.matches(decryptBase64(dto.getOriginPassword()), entity.getPassword())) {
+    if (!passwordEncoder.matches(decodeBase64(dto.getOriginPassword()), entity.getPassword())) {
       return error(RestUtil.getExceptions().getUnAuthenticated());
     }
 
-    entity.updatePassword(passwordEncoder.encode(decryptBase64(dto.getPassword())));
+    entity.updatePassword(passwordEncoder.encode(decodeBase64(dto.getPassword())));
 
     return RestUtil.ok();
   }
@@ -182,13 +182,13 @@ public class AuthService {
     String refreshToken = jwt.replace("Bearer ", "");
 
     // Refresh Token 이 메모리에 있는지 체크
-    if (!authRefreshService.exists(refreshToken)) {
+    if (!authRefreshUnit.exists(refreshToken)) {
       return error(RestUtil.getExceptions().getUnAuthenticated());
     }
 
-    AuthRefresh refresh = authRefreshService.getDetail(refreshToken); // Refresh Token 상세 조회
+    AuthRefresh refresh = authRefreshUnit.getDetail(refreshToken); // Refresh Token 상세 조회
     LocalDateTime updateDt = refresh.getUpdateDt(); // Access Token 갱신 날짜 시간 조회
-    AuthAccess access = authAccessService.get(refresh.getAccess().getId()); // Access Token 상세 조회
+    AuthAccess access = authAccessUnit.get(refresh.getAccess().getId()); // Access Token 상세 조회
     String accessToken = access.getId(); // Access Token 조회
     Long id = access.getSignId(); // 계정 일련 번호 조회
     Role role = access.getRole(); // 계정 권한 조회
@@ -197,8 +197,8 @@ public class AuthService {
     long limit = 60L * 60L * 4L; // 4 시간
 
     if (between(updateDt, now()).getSeconds() > limit) {
-      authAccessService.delete(accessToken);
-      authRefreshService.delete(refreshToken);
+      authAccessUnit.delete(accessToken);
+      authRefreshUnit.delete(refreshToken);
 
       return error(RestUtil.getExceptions().getUnAuthenticated());
     }
@@ -206,14 +206,14 @@ public class AuthService {
     // 새로운 Access Token 발급
     String newAccessToken = SecurityUtil.createAccessToken(id);
 
-    authAccessService.delete(accessToken);
-    authAccessService.save(AuthAccess.createRedis(newAccessToken, id, role));
+    authAccessUnit.delete(accessToken);
+    authAccessUnit.save(AuthAccess.createRedis(newAccessToken, id, role));
 
-    refresh.updateRedis(authAccessService.get(newAccessToken));
-    authRefreshService.save(refresh);
+    refresh.updateRedis(authAccessUnit.get(newAccessToken));
+    authRefreshUnit.save(refresh);
 
     // 계정 최근 접속 날짜 시간 갱신
-    signService.get(id).updateSignDt();
+    signUnit.get(id).updateSignDt();
 
     RefreshTokenResponse response = RefreshTokenResponse
         .builder()
@@ -255,9 +255,9 @@ public class AuthService {
   @Transactional
   public ResponseEntity<?> updateInfo(SignUpdateRequest dto) {
     if (RestUtil.checkUser()) {
-      RestUtil.getSignedAccount().updateEntity(decryptBase64(dto.getName()));
+      RestUtil.getSignedAccount().updateEntity(decodeBase64(dto.getName()));
     } else {
-      RestUtil.getSignedManager().updateSelf(decryptBase64(dto.getName()));
+      RestUtil.getSignedManager().updateSelf(decodeBase64(dto.getName()));
     }
 
     return RestUtil.ok();
@@ -281,8 +281,8 @@ public class AuthService {
       RestUtil.getSignedManager().removeEntity();
     }
 
-    authRefreshService.delete(authAccessService.get(id));
-    authAccessService.delete(id);
+    authRefreshUnit.delete(authAccessUnit.get(id));
+    authAccessUnit.delete(id);
 
     return RestUtil.ok();
   }

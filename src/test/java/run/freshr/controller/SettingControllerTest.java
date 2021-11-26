@@ -1,7 +1,7 @@
 package run.freshr.controller;
 
 import static run.freshr.DataRunner.managerIdList;
-import static run.freshr.util.CryptoUtil.encryptBase64;
+import static run.freshr.util.CryptoUtil.encodeBase64;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
@@ -38,9 +38,9 @@ public class SettingControllerTest extends TestExtension {
         ManagerCreateRequest
             .builder()
             .privilege(ManagerPrivilege.MANAGER)
-            .username(encryptBase64("input username"))
-            .password(encryptBase64("input password"))
-            .name(encryptBase64("input name"))
+            .username(encodeBase64("input username"))
+            .password(encodeBase64("input password"))
+            .name(encodeBase64("input name"))
             .build()
     ).andDo(print())
         .andDo(docs(
@@ -102,7 +102,7 @@ public class SettingControllerTest extends TestExtension {
         ManagerUpdateRequest
             .builder()
             .privilege(ManagerPrivilege.MANAGER)
-            .name(encryptBase64("input name"))
+            .name(encodeBase64("input name"))
             .build(),
         managerIdList.get(0)
     ).andDo(print())

@@ -6,7 +6,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static run.freshr.DataRunner.accountIdList;
 import static run.freshr.DataRunner.managerIdList;
-import static run.freshr.util.CryptoUtil.encryptBase64;
+import static run.freshr.util.CryptoUtil.encodeBase64;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,8 +57,8 @@ public class AuthControllerTest extends TestExtension {
         URIConfig.uriAuthSignIn,
         SignInRequest
             .builder()
-            .username(encryptBase64(testService.getManager(managerIdList.get(0)).getUsername()))
-            .password(encryptBase64("1234"))
+            .username(encodeBase64(testService.getManager(managerIdList.get(0)).getUsername()))
+            .password(encodeBase64("1234"))
             .build()
     ).andDo(print())
         .andDo(docs(
@@ -93,8 +93,8 @@ public class AuthControllerTest extends TestExtension {
         URIConfig.uriAuthPassword,
         SignPasswordRequest
             .builder()
-            .originPassword(encryptBase64("1234"))
-            .password(encryptBase64("input password"))
+            .originPassword(encodeBase64("1234"))
+            .password(encodeBase64("input password"))
             .build()
     ).andDo(print())
         .andDo(docs(requestFields(SignDocs.Request.updatePassword())))
@@ -141,7 +141,7 @@ public class AuthControllerTest extends TestExtension {
         URIConfig.uriAuthInfo,
         SignUpdateRequest
             .builder()
-            .name(encryptBase64("input name"))
+            .name(encodeBase64("input name"))
             .build()
     ).andDo(print())
         .andDo(docs(requestFields(SignDocs.Request.updateInfoByManager())))
@@ -160,7 +160,7 @@ public class AuthControllerTest extends TestExtension {
         URIConfig.uriAuthInfo,
         SignUpdateRequest
             .builder()
-            .name(encryptBase64("input name"))
+            .name(encodeBase64("input name"))
             .build()
     ).andDo(print())
         .andDo(docs(requestFields(SignDocs.Request.updateInfoByAccount())))

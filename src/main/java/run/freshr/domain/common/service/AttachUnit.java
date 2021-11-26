@@ -3,6 +3,7 @@ package run.freshr.domain.common.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
+import run.freshr.annotation.Unit;
 import run.freshr.domain.common.entity.Attach;
 import run.freshr.domain.common.repository.AttachRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,16 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 /**
- * The Class Attach service.
+ * The Class Attach unit.
  *
  * @author [류성재]
  * @implNote 공통 관리 > 첨부파일 관리 Service
  * @since 2020 -08-10 @author 류성재
  */
-@Service
+@Unit
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AttachService {
+public class AttachUnit {
 
   /**
    * The Repository

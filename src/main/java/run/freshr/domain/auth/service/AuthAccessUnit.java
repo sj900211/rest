@@ -3,6 +3,7 @@ package run.freshr.domain.auth.service;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 import javax.persistence.EntityNotFoundException;
+import run.freshr.annotation.Unit;
 import run.freshr.domain.auth.redis.AuthAccess;
 import run.freshr.domain.auth.repository.AuthAccessRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,16 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * The Class Auth access service.
+ * The Class Auth access unit.
  *
  * @author [류성재]
  * @implNote Access 토큰 Service
  * @since 2020 -08-10 @author 류성재
  */
-@Service
+@Unit
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AuthAccessService {
+public class AuthAccessUnit {
 
   /**
    * The Repository

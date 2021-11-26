@@ -212,6 +212,12 @@
             <artifactId>rest-docs</artifactId>
             <version>1.0.0.RELEASE</version>
         </dependency>
+
+        <dependency>
+            <groupId>run.freshr</groupId>
+            <artifactId>unit</artifactId>
+            <version>1.0.0.RELEASE</version>
+        </dependency>
     </dependencies>
 
     <build>

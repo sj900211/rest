@@ -7,6 +7,7 @@ import static run.freshr.common.util.RestUtil.getConfig;
 import javax.activation.FileDataSource;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import run.freshr.annotation.Unit;
 import run.freshr.domain.common.dto.send.EmailSend;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,16 +17,16 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 /**
- * The Class Mail service.
+ * The Class Mail unit.
  *
  * @author [류성재]
  * @implNote 공통 관리 > 이메일 발송 Service
  * @since 2021. 3. 16. 오후 2:42:57
  */
-@Service
+@Unit
 @Slf4j
 @RequiredArgsConstructor
-public class MailService {
+public class MailUnit {
 
   /**
    * The Mail sender

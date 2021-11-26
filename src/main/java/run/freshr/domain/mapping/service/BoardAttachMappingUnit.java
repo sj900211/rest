@@ -3,6 +3,7 @@ package run.freshr.domain.mapping.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
+import run.freshr.annotation.Unit;
 import run.freshr.domain.community.entity.Board;
 import run.freshr.domain.mapping.entity.BoardAttachMapping;
 import run.freshr.domain.mapping.repository.BoardAttachMappingRepository;
@@ -11,16 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * The Class Board attach mapping service.
+ * The Class Board attach mapping unit.
  *
  * @author [류성재]
  * @implNote 연관 관계 관리 > 게시글 첨부 파일 관리 Service
  * @since 2020 -08-10 @author 류성재
  */
-@Service
+@Unit
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class BoardAttachMappingService {
+public class BoardAttachMappingUnit {
 
   /**
    * The Repository

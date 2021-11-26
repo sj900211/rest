@@ -1,14 +1,14 @@
 package run.freshr.domain.user.validator;
 
-import static run.freshr.util.CryptoUtil.decryptBase64;
+import static run.freshr.util.CryptoUtil.decodeBase64;
 
 import java.util.Arrays;
 import java.util.List;
-import run.freshr.common.util.RestUtil;
-import run.freshr.domain.auth.dto.request.AccountCreateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
+import run.freshr.common.util.RestUtil;
+import run.freshr.domain.auth.dto.request.AccountCreateRequest;
 
 /**
  * The Class User validator.
@@ -41,7 +41,7 @@ public class UserValidator {
    * @since 2021. 3. 16. 오후 2:52:52
    */
   public void createAccount(AccountCreateRequest dto, BindingResult bindingResult) {
-    String username = decryptBase64(dto.getUsername());
+    String username = decodeBase64(dto.getUsername());
 
     if (username.contains("@")) {
       username = username.substring(0, username.indexOf("@"));

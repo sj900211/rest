@@ -1,5 +1,0 @@
-ifndef::snippets[]
-:snippets: ../../../target/generated-snippets
-endif::[]
-
-include::{snippets}/user-controller-test/get-account-page/popup/popup-fields-account-otarget.adoc[]

@@ -8,18 +8,18 @@ import static run.freshr.common.util.RestUtil.ok;
 import java.util.List;
 import java.util.stream.Collectors;
 import run.freshr.common.util.RestUtil;
-import run.freshr.domain.common.service.AttachService;
+import run.freshr.domain.common.service.AttachUnit;
 import run.freshr.domain.common.dto.request.AttachSortRequest;
 import run.freshr.domain.common.dto.response.IdResponse;
 import run.freshr.domain.community.dto.request.BoardCreateRequest;
 import run.freshr.domain.community.dto.request.BoardUpdateRequest;
 import run.freshr.domain.community.dto.response.BoardResponse;
 import run.freshr.domain.community.entity.Board;
-import run.freshr.domain.community.service.BoardService;
+import run.freshr.domain.community.service.BoardUnit;
 import run.freshr.domain.community.vo.CommunitySearch;
 import run.freshr.domain.mapping.dto.response.BoardAttachMappingResponse;
 import run.freshr.domain.mapping.entity.BoardAttachMapping;
-import run.freshr.domain.mapping.service.BoardAttachMappingService;
+import run.freshr.domain.mapping.service.BoardAttachMappingUnit;
 import run.freshr.util.MapperUtil;
 import run.freshr.util.XssUtil;
 import lombok.RequiredArgsConstructor;
@@ -43,15 +43,15 @@ public class CommunityService {
   /**
    * The Board service
    */
-  private final BoardService boardService;
+  private final BoardUnit boardUnit;
   /**
    * The Board attach mapping service
    */
-  private final BoardAttachMappingService boardAttachMappingService;
+  private final BoardAttachMappingUnit boardAttachMappingUnit;
   /**
    * The Attach service
    */
-  private final AttachService attachService;
+  private final AttachUnit attachUnit;
 
   // .______     ______        ___      .______       _______
   // |   _  \   /  __  \      /   \     |   _  \     |       \
@@ -70,7 +70,7 @@ public class CommunityService {
    * @since 2021. 3. 16. 오후 3:07:24
    */
   public ResponseEntity<?> getBoardPage(CommunitySearch search) {
-    Page<BoardResponse> page = boardService
+    Page<BoardResponse> page = boardUnit
         .getPage(search)
         .map(board -> MapperUtil.map(board, BoardResponse.class));
 
@@ -88,7 +88,7 @@ public class CommunityService {
    */
   @Transactional
   public ResponseEntity<?> getBoard(Long id) {
-    Board entity = boardService.get(id);
+    Board entity = boardUnit.get(id);
 
     entity.addHit();
 
@@ -108,21 +108,21 @@ public class CommunityService {
    */
   @Transactional
   public ResponseEntity<?> createBoard(BoardCreateRequest dto) {
-    long id = boardService.create(Board.createEntity(
+    long id = boardUnit.create(Board.createEntity(
         dto.getTitle(),
         XssUtil.xssBasicIgnoreImg(dto.getContent()),
         RestUtil.getSignedAccount()
     ));
-    Board entity = boardService.get(id);
+    Board entity = boardUnit.get(id);
 
     List<AttachSortRequest> attachList = dto.getAttachList();
 
     if (!isNull(attachList)) {
-      boardAttachMappingService.create(attachList
+      boardAttachMappingUnit.create(attachList
           .stream()
           .map(item -> BoardAttachMapping.createEntity(
               entity,
-              attachService.get(item.getAttach().getId()),
+              attachUnit.get(item.getAttach().getId()),
               ofNullable(item.getSort()).orElse(0)
           )).collect(Collectors.toList()));
     }
@@ -141,7 +141,7 @@ public class CommunityService {
    */
   @Transactional
   public ResponseEntity<?> updateBoard(Long id, BoardUpdateRequest dto) {
-    Board entity = boardService.get(id);
+    Board entity = boardUnit.get(id);
 
     if (!entity.owner(RestUtil.getSignedAccount())) {
       return error(RestUtil.getExceptions().getAccessDenied());
@@ -153,16 +153,16 @@ public class CommunityService {
         RestUtil.getSignedAccount()
     );
 
-    boardAttachMappingService.remove(entity);
+    boardAttachMappingUnit.remove(entity);
 
     List<AttachSortRequest> attachList = dto.getAttachList();
 
     if (!isNull(attachList)) {
-      boardAttachMappingService.create(attachList
+      boardAttachMappingUnit.create(attachList
           .stream()
           .map(item -> BoardAttachMapping.createEntity(
               entity,
-              attachService.get(item.getAttach().getId()),
+              attachUnit.get(item.getAttach().getId()),
               ofNullable(item.getSort()).orElse(0)
           )).collect(Collectors.toList()));
     }
@@ -181,11 +181,11 @@ public class CommunityService {
    */
   @Transactional
   public ResponseEntity<?> removeBoard(Long id) {
-    Board entity = boardService.get(id);
+    Board entity = boardUnit.get(id);
 
     entity.removeEntity();
 
-    boardAttachMappingService.remove(entity);
+    boardAttachMappingUnit.remove(entity);
 
     return RestUtil.ok();
   }
@@ -220,8 +220,8 @@ public class CommunityService {
    */
   @Transactional
   public ResponseEntity<?> getBoardAttachMappingList(Long id) {
-    Board entity = boardService.get(id);
-    List<BoardAttachMapping> entityList = boardAttachMappingService.getList(entity);
+    Board entity = boardUnit.get(id);
+    List<BoardAttachMapping> entityList = boardAttachMappingUnit.getList(entity);
     List<BoardAttachMappingResponse> list = MapperUtil
         .map(entityList, BoardAttachMappingResponse.class);
 
