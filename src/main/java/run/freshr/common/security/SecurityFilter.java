@@ -2,15 +2,20 @@ package run.freshr.common.security;
 
 import static com.google.common.base.CaseFormat.LOWER_HYPHEN;
 import static com.google.common.base.CaseFormat.UPPER_CAMEL;
-import static java.util.Optional.ofNullable;
-import static run.freshr.enumeration.StatusEnum.EXPIRED_JWT;
-import static run.freshr.util.BeanUtil.getBean;
+import static java.util.Optional.of;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.security.core.authority.AuthorityUtils.createAuthorityList;
 import static org.springframework.util.StringUtils.hasLength;
+import static run.freshr.common.security.SecurityUtil.AUTHORIZATION_STRING;
+import static run.freshr.common.security.SecurityUtil.BEARER_PREFIX;
+import static run.freshr.common.security.SecurityUtil.signedId;
+import static run.freshr.common.security.SecurityUtil.signedRole;
+import static run.freshr.domain.auth.enumeration.Role.ROLE_ANONYMOUS;
+import static run.freshr.enumeration.StatusEnum.EXPIRED_JWT;
+import static run.freshr.util.BeanUtil.getBean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -19,72 +24,43 @@ import java.util.Arrays;
 import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import run.freshr.common.model.ResponseModel;
-import run.freshr.domain.auth.enumeration.Role;
-import run.freshr.domain.auth.redis.AuthAccess;
-import run.freshr.domain.auth.service.AuthAccessUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import run.freshr.common.model.ResponseModel;
+import run.freshr.domain.auth.enumeration.Role;
+import run.freshr.domain.auth.redis.AuthAccess;
+import run.freshr.domain.auth.unit.AuthAccessUnitImpl;
 
-/**
- * Security Filter
- *
- * @author [류성재]
- * @implNote Security Filter
- * @since 2020 -08-10 @author 류성재
- */
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
-  /**
-   * The Auth access service
-   */
-  private final AuthAccessUnit authAccessUnit;
+  private final AuthAccessUnitImpl authAccessUnit;
 
-  /**
-   * The Object mapper
-   */
   private final ObjectMapper objectMapper;
 
-  /**
-   * Instantiates a new Security filter.
-   *
-   * @author [류성재]
-   * @implNote 생성자
-   * @since 2021. 2. 25. 오후 5:10:44
-   */
   public SecurityFilter() {
-    this.authAccessUnit = getBean(AuthAccessUnit.class);
+    this.authAccessUnit = getBean(AuthAccessUnitImpl.class);
     this.objectMapper = getBean(ObjectMapper.class);
   }
 
-  /**
-   * Do filter internal.
-   *
-   * @param request     the request
-   * @param response    the response
-   * @param filterChain the filter chain
-   * @author [류성재]
-   * @implNote 필터 로직
-   * @since 2021. 2. 25. 오후 5:10:44
-   */
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) {
     log.debug("**** SECURITY FILTER START");
 
     try {
-      String header = request.getHeader(SecurityUtil.AUTHORIZATION_STRING); // Request Header Authorization 값 조회
-      String jwt = ofNullable(header).orElse(null); // Bearer 토큰 조회
+      // Request Header Authorization 값 조회
+      String header = request.getHeader(AUTHORIZATION_STRING);
+      String jwt = of(header).orElse(null); // Bearer 토큰 조회
       Long id = 0L; // 게스트 권한으로 설정
-      Role role = Role.ROLE_ANONYMOUS; // 게스트 권한으로 설정
+      Role role = ROLE_ANONYMOUS; // 게스트 권한으로 설정
 
       if (hasLength(jwt)) { // Bearer 토큰이 있는 경우
-        String accessToken = jwt.replace(SecurityUtil.BEARER_PREFIX, ""); // Access 토큰 조회
+        String accessToken = jwt.replace(BEARER_PREFIX, ""); // Access 토큰 조회
 
         if (!authAccessUnit.exists(accessToken)) { // 발급한 토큰인지 체크
           throw new ExpiredJwtException(null, null, "error validate token");
@@ -95,12 +71,13 @@ public class SecurityFilter extends OncePerRequestFilter {
         }
 
         AuthAccess access = authAccessUnit.get(accessToken); // 데이터 조회
+
         id = access.getSignId(); // 일련 번호 조회
         role = access.getRole(); // 권한 조회
       }
 
-      SecurityUtil.signedId.set(id); // 조회된 계정의 일련 번호 설정
-      SecurityUtil.signedRole.set(role); // 조회된 계정의 권한 설정
+      signedId.set(id); // 조회된 계정의 일련 번호 설정
+      signedRole.set(role); // 조회된 계정의 권한 설정
 
       /*
        * 위에서 설정한 데이터로 일회용 로그인 설정
@@ -115,8 +92,8 @@ public class SecurityFilter extends OncePerRequestFilter {
               createAuthorityList(role.getKey())
           ));
 
-      log.debug("**** Role: " + SecurityUtil.signedRole.get().name());
-      log.debug("**** Id: " + SecurityUtil.signedId.get());
+      log.debug("**** Role: " + signedRole.get().name());
+      log.debug("**** Id: " + signedId.get());
 
       filterChain.doFilter(request, response);
     } catch (ExpiredJwtException e) { // 발급한 토큰이 아니거나 만료된 토큰 처리

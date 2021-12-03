@@ -1,20 +1,10 @@
 package run.freshr.common.config;
 
-/**
- * The Class Uri config.
- *
- * @author [류성재]
- * @implNote URI 설정
- * @since 2021. 2. 24. 오후 5:45:17
- */
 public class URIConfig {
 
   public static final String uriH2All = "/h2/**"; // 로컬에서 H2 DB 를 확인하는 URI
   public static final String uriDocsAll = "/docs/**"; // API 문서 URI
   public static final String uriFavicon = "/favicon.ico"; // 파비콘 URL
-  public static final String uriEnumAll = "/enum/**"; // ENUM 관련 URI
-  public static final String uriFileAll = "/file/**"; // 첨부 파일 관련 URI
-  public static final String uriEditorAll = "/editor/**"; // 에디터 파일 업로드 URI
 
   public static final String uriDocsIndex = "/docs";
   public static final String uriDocsDepth1 = "/docs/{depth1}";
@@ -36,17 +26,5 @@ public class URIConfig {
   public static final String uriAuthSignOut = "/auth/sign-out";
   public static final String uriAuthPassword = "/auth/password";
   public static final String uriAuthInfo = "/auth/info";
-
-  public static final String uriSetting = "/setting";
-  public static final String uriSettingManager = "/setting/manager";
-  public static final String uriSettingManagerId = "/setting/manager/{id}";
-
-  public static final String uriUser = "/user";
-  public static final String uriUserId = "/user/{id}";
-
-  public static final String uriCommunity = "/community";
-  public static final String uriCommunityBoard = "/community/board";
-  public static final String uriCommunityBoardId = "/community/board/{id}";
-  public static final String uriCommunityBoardIdAttach = "/community/board/{id}/attach";
 
 }

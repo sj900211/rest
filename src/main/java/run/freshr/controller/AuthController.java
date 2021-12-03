@@ -1,14 +1,21 @@
 package run.freshr.controller;
 
+import static run.freshr.common.config.URIConfig.uriAuthInfo;
+import static run.freshr.common.config.URIConfig.uriAuthPassword;
+import static run.freshr.common.config.URIConfig.uriAuthSignIn;
+import static run.freshr.common.config.URIConfig.uriAuthSignOut;
+import static run.freshr.common.config.URIConfig.uriAuthToken;
+import static run.freshr.domain.auth.enumeration.Role.Secured.ANONYMOUS;
+import static run.freshr.domain.auth.enumeration.Role.Secured.COACH;
+import static run.freshr.domain.auth.enumeration.Role.Secured.LEADER;
+import static run.freshr.domain.auth.enumeration.Role.Secured.MANAGER;
+import static run.freshr.domain.auth.enumeration.Role.Secured.SUPER;
+import static run.freshr.domain.auth.enumeration.Role.Secured.USER;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import run.freshr.common.config.URIConfig;
-import run.freshr.domain.auth.enumeration.Role;
-import run.freshr.service.AuthService;
-import run.freshr.domain.auth.dto.request.SignInRequest;
-import run.freshr.domain.auth.dto.request.SignPasswordRequest;
-import run.freshr.domain.auth.dto.request.SignUpdateRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,122 +24,70 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import run.freshr.domain.auth.dto.request.SignChangePasswordRequest;
+import run.freshr.domain.auth.dto.request.SignInRequest;
+import run.freshr.domain.auth.dto.request.SignUpdateRequest;
+import run.freshr.service.AuthService;
 
-/**
- * The Class Auth controller.
- *
- * @author [류성재]
- * @implNote 권한 관리
- * @since 2021. 3. 16. 오후 12:12:39
- */
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
 
-  /**
-   * The Service
-   */
   private final AuthService service;
 
-  /**
-   * Refresh token response entity.
-   *
-   * @param request the request
-   * @return the response entity
-   * @author [류성재]
-   * @implNote 토큰 갱신
-   * @since 2021. 3. 16. 오후 12:12:39
-   */
-  @PostMapping(URIConfig.uriAuthToken)
+  @PostMapping(uriAuthToken)
   public ResponseEntity<?> refreshToken(HttpServletRequest request) {
+    log.info("AuthController.refreshToken");
+
     return service.refreshToken(request);
   }
 
-  /**
-   * Sign in response entity.
-   *
-   * @param dto the dto
-   * @return the response entity
-   * @author [류성재]
-   * @implNote 로그인
-   * @since 2021. 3. 16. 오후 12:12:39
-   */
-  @Secured(Role.Secured.ANONYMOUS)
-  @PostMapping(URIConfig.uriAuthSignIn)
+  @Secured(ANONYMOUS)
+  @PostMapping(uriAuthSignIn)
   public ResponseEntity<?> signIn(@RequestBody @Valid SignInRequest dto) {
+    log.info("AuthController.signIn");
+
     return service.signIn(dto);
   }
 
-  /**
-   * Sign out response entity.
-   *
-   * @param request the request
-   * @return the response entity
-   * @author [류성재]
-   * @implNote 로그아웃
-   * @since 2021. 3. 16. 오후 12:12:39
-   */
-  @Secured({Role.Secured.SUPER, Role.Secured.MANAGER, Role.Secured.USER})
-  @PostMapping(URIConfig.uriAuthSignOut)
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER})
+  @PostMapping(uriAuthSignOut)
   public ResponseEntity<?> signOut(HttpServletRequest request) {
+    log.info("AuthController.signOut");
+
     return service.signOut(request);
   }
 
-  /**
-   * Gets info.
-   *
-   * @return the info
-   * @author [류성재]
-   * @implNote 로그인한 계정 자신의 정보를 조회
-   * @since 2021. 3. 16. 오후 12:12:39
-   */
-  @Secured({Role.Secured.SUPER, Role.Secured.MANAGER, Role.Secured.USER})
-  @GetMapping(URIConfig.uriAuthInfo)
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER})
+  @GetMapping(uriAuthInfo)
   public ResponseEntity<?> getInfo() {
+    log.info("AuthController.getInfo");
+
     return service.getInfo();
   }
 
-  /**
-   * Update info response entity.
-   *
-   * @param dto the dto
-   * @return the response entity
-   * @author [류성재]
-   * @implNote 로그인한 계정 자신의 정보를 수정
-   * @since 2021. 3. 16. 오후 12:12:39
-   */
-  @Secured({Role.Secured.SUPER, Role.Secured.MANAGER, Role.Secured.USER})
-  @PutMapping(URIConfig.uriAuthInfo)
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER})
+  @PutMapping(uriAuthInfo)
   public ResponseEntity<?> updateInfo(@RequestBody @Valid SignUpdateRequest dto) {
+    log.info("AuthController.updateInfo");
+
     return service.updateInfo(dto);
   }
 
-  /**
-   * Update password response entity.
-   *
-   * @param dto the dto
-   * @return the response entity
-   * @author [류성재]
-   * @implNote 로그인한 계정 자신의 비밀번호를 변경
-   * @since 2021. 3. 16. 오후 12:12:39
-   */
-  @Secured({Role.Secured.SUPER, Role.Secured.MANAGER, Role.Secured.USER})
-  @PutMapping(URIConfig.uriAuthPassword)
-  public ResponseEntity<?> updatePassword(@RequestBody @Valid SignPasswordRequest dto) {
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER})
+  @PutMapping(uriAuthPassword)
+  public ResponseEntity<?> updatePassword(@RequestBody @Valid SignChangePasswordRequest dto) {
+    log.info("AuthController.updatePassword");
+
     return service.updatePassword(dto);
   }
 
-  /**
-   * Remove info response entity.
-   *
-   * @return the response entity
-   * @author [류성재]
-   * @implNote 로그인한 계정 자신을 탈퇴
-   * @since 2021. 3. 16. 오후 12:12:39
-   */
-  @Secured({Role.Secured.SUPER, Role.Secured.MANAGER, Role.Secured.USER})
-  @DeleteMapping(URIConfig.uriAuthInfo)
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER})
+  @DeleteMapping(uriAuthInfo)
   public ResponseEntity<?> removeInfo() {
+    log.info("AuthController.removeInfo");
+
     return service.removeInfo();
   }
 

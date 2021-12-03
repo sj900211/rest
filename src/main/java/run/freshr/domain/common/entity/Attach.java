@@ -13,28 +13,26 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import run.freshr.annotation.ColumnComment;
 import run.freshr.annotation.TableComment;
-import run.freshr.common.extension.EntityExtension;
+import run.freshr.common.extension.EntityLogicalExtension;
 import run.freshr.service.PhysicalAttachService;
 
-/**
- * @apiNote AWS S3 업로드로 기능 구성
- * @since 2020 -08-10 @author 류성재
- */
+@Slf4j
 @Entity
 @Table(
     name = "TB_COM_ATTACH",
-    indexes = @Index(name = "IDX_FLAG", columnList = "useFlag, delFlag")
+    indexes = @Index(name = "IDX_COM_ATTACH_FLAG", columnList = "useFlag, delFlag")
 )
 @TableComment(value = "공통 관리 > 첨부파일 관리", extend = "EntityExtension")
 @Getter
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor(access = PROTECTED)
-public class Attach extends EntityExtension {
+public class Attach extends EntityLogicalExtension {
 
   @ColumnComment("파일 유형")
   private String contentType;
@@ -60,21 +58,10 @@ public class Attach extends EntityExtension {
   @Transient
   private URL url;
 
-  /**
-   * Instantiates a new Attach.
-   *
-   * @param contentType the content type
-   * @param filename    the filename
-   * @param path        the path
-   * @param size        the size
-   * @param alt         the alt
-   * @param title       the title
-   * @author [류성재]
-   * @implNote 생성자
-   * @since 2021. 3. 16. 오후 2:38:57
-   */
   private Attach(String contentType, String filename, String path, Long size, String alt,
       String title) {
+    log.info("Attach.Constructor");
+
     this.contentType = contentType;
     this.filename = filename;
     this.path = path;
@@ -83,56 +70,16 @@ public class Attach extends EntityExtension {
     this.title = title;
   }
 
-  /**
-   * Create entity attach.
-   *
-   * @param contentType the content type
-   * @param filename    the filename
-   * @param path        the path
-   * @param size        the size
-   * @param alt         the alt
-   * @param title       the title
-   * @return the attach
-   * @author [류성재]
-   * @implNote 생성 메서드
-   * @since 2021. 3. 16. 오후 2:38:57
-   */
   public static Attach createEntity(String contentType, String filename, String path, Long size,
       String alt, String title) {
+    log.info("Attach.createEntity");
+
     return new Attach(contentType, filename, path, size, alt, title);
   }
 
-  /** AWS S3 Settings
-   *  public URL getUrl() throws IOException {
-   *   if (checkProfile("test")) {
-   *     return new URL("http://localhost:8900/" + this.path);
-   *   }
-   *
-   *    S3Service service = getBean(S3Service.class);
-   *
-   *    return service.getResourceUrl(this.path, 1);
-   *  }
-   */
-  /** AWS Cloud Front Settings
-   * public URL getUrl() throws MalformedURLException {
-   *   if (checkProfile("test")) {
-   *     return new URL("http://localhost:8900/" + this.path);
-   *   }
-   *
-   *   CloudFrontService service = getBean(CloudFrontService.class);
-   *
-   *   return service.getSignedUrl(this.path);
-   * }
-   */
-  /**
-   * Physical Attach Settings public URL getUrl() throws MalformedURLException { if
-   * (checkProfile("test")) { return new URL("http://localhost:8900/" + this.path); }
-   * <p>
-   * PhysicalAttachService service = getBean(PhysicalAttachService.class);
-   * <p>
-   * return service.getResourceUrl(this.path); }
-   */
   public URL getUrl() throws MalformedURLException {
+    log.info("Attach.getUrl");
+
     if (checkProfile("test")) {
       return new URL("http://localhost:8900/" + this.path);
     }

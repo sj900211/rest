@@ -2,10 +2,10 @@
 Rest 프로젝트 개발 정보입니다.
 
 # 개발 일정
-[...](...)
+[...]()
 
 # 기획서 정보
-[...](...)
+[...]()
 
 # URI 정보
 [URI 정의서]() 에는 기능에 따른 진행 상태와 작업자 정보 등을 확일할 수 있으니 참고 요청드립니다.
@@ -15,23 +15,23 @@ API 정보는 [**Domain**](#domain-정보), [**Document**](#document-정보) 가
 
 > ## Domain 정보
 >> |서버            |URI                                                            |
->> |----------------|---------------------------------------------------------------|
->> |**개발**        |[...](...)                                                     |
->> |**스테이징**    |[...](...)                                                     |
->> |**운영**        |[...](...)                                                     |
+>> |-|-|
+>> |**개발**        |[...]()                                                     |
+>> |**스테이징**    |[...]()                                                     |
+>> |**운영**        |[...]()                                                     |
 
 > ## Document 정보
 >> |서버            |URI                                                            |
->> |----------------|---------------------------------------------------------------|
->> |**개발**        |[.../docs](.../docs)                                           |
->> |**스테이징**    |[.../docs](.../docs)                                           |
->> |**운영**        |[.../docs](.../docs)                                           |
+>> |-|-|
+>> |**개발**        |[.../docs]()                                           |
+>> |**스테이징**    |[.../docs]()                                           |
+>> |**운영**        |[.../docs]()                                           |
 
 # Database 접속정보
 > ## 개발 서버
 >> ### MARIA DB
 >> |Title           |Value                                                          |
->> |----------------|---------------------------------------------------------------|
+>> |-|-|
 >> |**Host**        |XXX.XXX.XXX                                                    |
 >> |**Port**        |XXXXX                                                          |
 >> |**Username**    |XXXX                                                           |
@@ -39,7 +39,7 @@ API 정보는 [**Domain**](#domain-정보), [**Document**](#document-정보) 가
 >> |**Database**    |XXXX                                                           |
 >> ### REDIS
 >> |Title           |Value                                                          |
->> |----------------|---------------------------------------------------------------|
+>> |-|-|
 >> |**Host**        |XXX.XXX.XXX                                                    |
 >> |**Port**        |XXXXX                                                          |
 >> |**Username**    |XXXX                                                           |
@@ -48,7 +48,7 @@ API 정보는 [**Domain**](#domain-정보), [**Document**](#document-정보) 가
 > ## 스테이징 서버
 >> ### MARIA DB
 >> |Title           |Value                                                          |
->> |----------------|---------------------------------------------------------------|
+>> |-|-|
 >> |**Host**        |XXX.XXX.XXX                                                    |
 >> |**Port**        |XXXXX                                                          |
 >> |**Username**    |XXXX                                                           |
@@ -56,7 +56,7 @@ API 정보는 [**Domain**](#domain-정보), [**Document**](#document-정보) 가
 >> |**Database**    |XXXX                                                           |
 >> ### REDIS
 >> |Title           |Value                                                          |
->> |----------------|---------------------------------------------------------------|
+>> |-|-|
 >> |**Host**        |XXX.XXX.XXX                                                    |
 >> |**Port**        |XXXXX                                                          |
 >> |**Username**    |XXXX                                                           |
@@ -65,7 +65,7 @@ API 정보는 [**Domain**](#domain-정보), [**Document**](#document-정보) 가
 > ## 운영 서버
 >> ### MARIA DB
 >> |Title           |Value                                                          |
->> |----------------|---------------------------------------------------------------|
+>> |-|-|
 >> |**Host**        |XXX.XXX.XXX                                                    |
 >> |**Port**        |XXXXX                                                          |
 >> |**Username**    |XXXX                                                           |
@@ -73,7 +73,7 @@ API 정보는 [**Domain**](#domain-정보), [**Document**](#document-정보) 가
 >> |**Database**    |XXXX                                                           |
 >> ### REDIS
 >> |Title           |Value                                                          |
->> |----------------|---------------------------------------------------------------|
+>> |-|-|
 >> |**Host**        |XXX.XXX.XXX                                                    |
 >> |**Port**        |XXXXX                                                          |
 >> |**Username**    |XXXX                                                           |
@@ -83,7 +83,7 @@ API 정보는 [**Domain**](#domain-정보), [**Document**](#document-정보) 가
 > # FTP 접속 정보
 > ## 개발 서버
 >> |Title           |Value                                                          |
->> |----------------|---------------------------------------------------------------|
+>> |-|-|
 >> |**Protocol**    |SFTP                                                           |
 >> |**Host**        |XXX.XXX.XXX                                                    |
 >> |**Port**        |XXXXX                                                          |
@@ -92,7 +92,7 @@ API 정보는 [**Domain**](#domain-정보), [**Document**](#document-정보) 가
 >> |**Path**        |/XXX/XXX                                                       |
 > ## 스테이징 서버
 >> |Title           |Value                                                          |
->> |----------------|---------------------------------------------------------------|
+>> |-|-|
 >> |**Protocol**    |SFTP                                                           |
 >> |**Host**        |XXX.XXX.XXX                                                    |
 >> |**Port**        |XXXXX                                                          |
@@ -101,7 +101,7 @@ API 정보는 [**Domain**](#domain-정보), [**Document**](#document-정보) 가
 >> |**Path**        |/XXX/XXX                                                       |
 > ## 운영 서버
 >> |Title           |Value                                                          |
->> |----------------|---------------------------------------------------------------|
+>> |-|-|
 >> |**Protocol**    |SFTP                                                           |
 >> |**Host**        |XXX.XXX.XXX                                                    |
 >> |**Port**        |XXXXX                                                          |
@@ -124,30 +124,30 @@ sudo service rest restart
 > - ### [Java Code Convention](https://git.freshr.run/freshr/documents/code-convention/-/wikis/Java-Code-Conventio)
 - ## 프로젝트 개발 가이드
 > - ### 개발 환경
->> |           |                                                   |
->> |-----------|---------------------------------------------------|
->> |Framework  |Spring Boot                                        |
->> |Language   |Java 11 (이상)                                     |
->> |Build      |Maven                                              |
->> |Orm        |JPA & QueryDsl                                     |
->> |Test Code  |Controller Test 까지만 작성. 단위테스트 작성은 자유|
->> |API Docs   |Rest Docs 작성 필수                                |
->> |IDE        |IntelliJ (권장)                                    |
+>> |           |                                                |
+>> |-|-|
+>> |Framework  |Spring Boot                                     |
+>> |Language   |Java 11 (이상)                                   |
+>> |Build      |Maven                                           |
+>> |Orm        |JPA & QueryDsl                                  |
+>> |Test Code  |Controller Test 까지만 작성. 단위테스트 작성은 자유  |
+>> |API Docs   |Rest Docs 작성 필수                              |
+>> |IDE        |IntelliJ (권장)                                  |
 > - #### Project 생성
 >> 1. [LITE Package](https://git.freshr.run/freshr/packages/rest) 를 내려받는다.
 >> 2. Git URL 을 변경한다.  
       >> *Git > Manage Remotes... 에서 변경할 수 있다.*
 >>
-> - #### Project Intializr
+> - #### Project Initializer
 >> Project 를 생성했다면 몇 가지 설정을 해야 한다.
 > 1. ##### 파일 업로드
 >> 파일 업로드 형식을 프로젝트에 맞춰 변경해야한다.
 >>> - AWS S3 를 사용하는 형식
 >>>> 1. pom.xml 에서 run.freshr:aws-s3:1.0.0.RELEASE 주석 해제
->>>> 2. run.freshr.service.CommonService.java 파일에서 S3 기능 관련 주석 해제
+>>>> 2. run.freshr.service.CommonServiceImpl.java 파일에서 S3 기능 관련 주석 해제
 >>> - 서버에 직접 업로드 하는 형식
 >>>> 1. pom.xml 에서 run.freshr:attach:1.0.0.RELEASE 주석 해제
->>>> 2. run.freshr.service.CommonService.java 파일에서 물리 파일 기능 관련 주석 해제
+>>>> 2. run.freshr.service.CommonServiceImpl.java 파일에서 물리 파일 기능 관련 주석 해제
 > 2. ##### 접속 정보
 > 프로젝트에 맞춰 접속 정보를 변경해야 한다.
 >> 1. README.md 파일을 프로젝트 정보에 맞춰 수정한다.
@@ -327,7 +327,7 @@ sudo service rest restart
 >     @Test
 >     @DisplayName("개발 DB 더미 데이터 생성")
 >     public void dummy() {
->         System.out.println("Insert dummy");
+>         log.debug("Insert dummy");
 >     }
 > ```
 - CommonControllerTest.dummy 실행

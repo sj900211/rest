@@ -5,16 +5,20 @@ import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import run.freshr.common.util.PrintUtil;
-import run.freshr.common.snippet.PopupFieldsSnippet;
-import run.freshr.mapper.EnumValue;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.restdocs.request.ParameterDescriptor;
+import run.freshr.common.snippet.PopupFieldsSnippet;
+import run.freshr.common.util.PrintUtil;
+import run.freshr.mapper.EnumValue;
 
+@Slf4j
 public class EnumDocs {
 
   public static class Request {
 
     public static List<ParameterDescriptor> getEnum() {
+      log.info("EnumDocs.Request.getEnum");
+
       return PrintUtil
           .builder()
 
@@ -28,6 +32,8 @@ public class EnumDocs {
   public static class Response {
 
     public static PopupFieldsSnippet[] getEnumList(Map<String, List<EnumValue>> enumMap) {
+      log.info("EnumDocs.Response.getEnumList");
+
       PrintUtil.Builder builder = PrintUtil
           .builder();
 

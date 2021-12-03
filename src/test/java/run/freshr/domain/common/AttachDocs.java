@@ -1,25 +1,32 @@
 package run.freshr.domain.common;
 
-import static run.freshr.domain.common.entity.QAttach.attach;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
 import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
+import static run.freshr.domain.common.entity.QAttach.attach;
 
 import java.util.List;
-import run.freshr.common.util.PrintUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.restdocs.payload.FieldDescriptor;
 import org.springframework.restdocs.request.ParameterDescriptor;
 import org.springframework.restdocs.request.RequestPartDescriptor;
+import run.freshr.common.docs.ResponseDocs;
+import run.freshr.common.util.PrintUtil;
 
+@Slf4j
 public class AttachDocs {
 
   public static class Request {
 
     public static RequestPartDescriptor createAttachFile() {
+      log.info("AttachDocs.Request.createAttachFile");
+
       return partWithName("files").description("첨부 파일");
     }
 
     public static List<ParameterDescriptor> createAttach() {
+      log.info("AttachDocs.Request.createAttach");
+
       return PrintUtil
           .builder()
 
@@ -38,6 +45,8 @@ public class AttachDocs {
     }
 
     public static List<ParameterDescriptor> existAttach() {
+      log.info("AttachDocs.Request.existAttach");
+
       return PrintUtil
           .builder()
 
@@ -50,6 +59,8 @@ public class AttachDocs {
     }
 
     public static List<ParameterDescriptor> getAttach() {
+      log.info("AttachDocs.Request.getAttach");
+
       return PrintUtil
           .builder()
 
@@ -62,6 +73,8 @@ public class AttachDocs {
     }
 
     public static List<ParameterDescriptor> removeAttach() {
+      log.info("AttachDocs.Request.removeAttach");
+
       return PrintUtil
           .builder()
 
@@ -72,19 +85,13 @@ public class AttachDocs {
           .build()
           .getParameterList();
     }
-
-    public static RequestPartDescriptor createAttachForEditorCK() {
-      return partWithName("upload").description("첨부 파일");
-    }
-
-    public static RequestPartDescriptor createAttachForEditorJodit() {
-      return partWithName("upload").description("첨부 파일");
-    }
   }
 
   public static class Response {
 
     public static List<FieldDescriptor> createAttach() {
+      log.info("AttachDocs.Response.createAttach");
+
       return ResponseDocs
           .Response
           .list()
@@ -98,6 +105,8 @@ public class AttachDocs {
     }
 
     public static List<FieldDescriptor> existAttach() {
+      log.info("AttachDocs.Response.existAttach");
+
       return ResponseDocs
           .Response
           .data()
@@ -111,6 +120,8 @@ public class AttachDocs {
     }
 
     public static List<FieldDescriptor> getAttach() {
+      log.info("AttachDocs.Response.getAttach");
+
       return ResponseDocs
           .Response
           .data()
@@ -128,20 +139,6 @@ public class AttachDocs {
           .prefixOptional()
 
           .field(attach.alt, attach.title)
-
-          .build()
-          .getFieldList();
-    }
-
-    public static List<FieldDescriptor> createAttachForEditorCK() {
-      return PrintUtil
-          .builder()
-
-          .field("success", "성공 여부", BOOLEAN)
-
-          .prefix("data")
-
-          .field("uri", "업로드 파일 URI", STRING)
 
           .build()
           .getFieldList();

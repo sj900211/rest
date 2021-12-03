@@ -1,87 +1,54 @@
 package run.freshr.controller;
 
-import run.freshr.common.config.URIConfig;
-import run.freshr.common.util.RestUtil;
+import static run.freshr.common.config.URIConfig.uriDocsDepth1;
+import static run.freshr.common.config.URIConfig.uriDocsDepth2;
+import static run.freshr.common.config.URIConfig.uriDocsDepth3;
+import static run.freshr.common.config.URIConfig.uriDocsIndex;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
+import run.freshr.common.util.RestUtil;
 
-/**
- * The Class Docs controller.
- *
- * @author [류성재]
- * @implNote 문서 관리
- * @since 2021. 3. 16. 오후 12:18:20
- */
+@Slf4j
 @RestController
 public class DocsController {
 
-  /**
-   * View docs model and view.
-   *
-   * @param mav the mav
-   * @return the model and view
-   * @author [류성재]
-   * @implNote 요청 URI 가 없으면 index 페이지로 이동
-   * @since 2021. 3. 16. 오후 12:18:20
-   */
-  @GetMapping(URIConfig.uriDocsIndex)
+  private final String DOCS = "docs";
+
+  @GetMapping(uriDocsIndex)
   public ModelAndView viewDocs(ModelAndView mav) {
-    mav.setView(new RedirectView("/docs/index", true));
+    log.info("DocsController.viewDocs");
+
+    mav.setView(new RedirectView("/" + DOCS + "/index", true));
 
     return mav;
   }
 
-  /**
-   * View docs model and view.
-   *
-   * @param depth1 the depth 1
-   * @param mav    the mav
-   * @return the model and view
-   * @author [류성재]
-   * @implNote 요청 URI 정보에 따라 API 정의 문서로 연결
-   * @since 2021. 3. 16. 오후 12:18:20
-   */
-  @GetMapping(URIConfig.uriDocsDepth1)
+  @GetMapping(uriDocsDepth1)
   public ModelAndView viewDocs(@PathVariable String depth1, ModelAndView mav) {
-    return RestUtil.view(mav, "docs", depth1);
+    log.info("DocsController.viewDocs");
+
+    return RestUtil.view(mav, DOCS, depth1);
   }
 
-  /**
-   * View docs model and view.
-   *
-   * @param depth1 the depth 1
-   * @param depth2 the depth 2
-   * @param mav    the mav
-   * @return the model and view
-   * @author [류성재]
-   * @implNote 요청 URI 정보에 따라 API 정의 문서로 연결
-   * @since 2021. 3. 16. 오후 12:18:20
-   */
-  @GetMapping(URIConfig.uriDocsDepth2)
+  @GetMapping(uriDocsDepth2)
   public ModelAndView viewDocs(@PathVariable String depth1, @PathVariable String depth2,
       ModelAndView mav) {
-    return RestUtil.view(mav, "docs", depth1, depth2);
+    log.info("DocsController.viewDocs");
+
+    return RestUtil.view(mav, DOCS, depth1, depth2);
   }
 
-  /**
-   * View docs model and view.
-   *
-   * @param depth1 the depth 1
-   * @param depth2 the depth 2
-   * @param depth3 the depth 3
-   * @param mav    the mav
-   * @return the model and view
-   * @author [류성재]
-   * @implNote 요청 URI 정보에 따라 API 정의 문서로 연결
-   * @since 2021. 3. 16. 오후 12:18:20
-   */
-  @GetMapping(URIConfig.uriDocsDepth3)
+  @GetMapping(uriDocsDepth3)
   public ModelAndView viewDocs(@PathVariable String depth1, @PathVariable String depth2,
       @PathVariable String depth3, ModelAndView mav) {
-    return RestUtil.view(mav, "docs", depth1, depth2, depth3);
+    log.info("DocsController.viewDocs");
+
+    return RestUtil.view(mav, DOCS, depth1, depth2, depth3);
   }
 
 }
