@@ -7,6 +7,7 @@ import static run.freshr.common.config.DefaultColumnConfig.INSERT_TIMESTAMP;
 import static run.freshr.common.config.DefaultColumnConfig.TRUE;
 import static run.freshr.common.config.DefaultColumnConfig.UPDATE_TIMESTAMP;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -20,12 +21,12 @@ import run.freshr.domain.auth.entity.Account;
 
 @Getter
 @MappedSuperclass
-public class EntityAuditPhysicalExtension {
+public class EntityAuditPhysicalExtension<ID extends Serializable> {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
   @ColumnComment("일련 번호")
-  protected Long id;
+  protected ID id;
 
   @ColumnDefault(TRUE)
   @ColumnComment("사용 여부")
@@ -47,6 +48,10 @@ public class EntityAuditPhysicalExtension {
   @JoinColumn(name = "creator_id")
   @ColumnComment("등록자 일련 번호")
   protected Account creator;
+
+  public boolean checkOwner(Account entity) {
+    return creator.equals(entity);
+  }
 
   public void remove() {
     useFlag = false;

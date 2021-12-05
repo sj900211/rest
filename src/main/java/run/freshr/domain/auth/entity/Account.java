@@ -3,6 +3,7 @@ package run.freshr.domain.auth.entity;
 import static java.time.LocalDateTime.now;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.isNull;
+import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
 import static javax.persistence.InheritanceType.JOINED;
 import static lombok.AccessLevel.PROTECTED;
@@ -10,15 +11,16 @@ import static org.springframework.util.StringUtils.hasLength;
 import static run.freshr.domain.auth.enumeration.Privilege.USER;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
 import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -32,6 +34,7 @@ import run.freshr.annotation.TableComment;
 import run.freshr.common.extension.EntityLogicalExtension;
 import run.freshr.domain.auth.enumeration.Privilege;
 import run.freshr.domain.common.entity.Attach;
+import run.freshr.domain.mapping.entity.AccountHashtagMapping;
 
 @Slf4j
 @Entity
@@ -43,16 +46,16 @@ import run.freshr.domain.common.entity.Attach;
         @Index(name = "IDX_AUTH_SIGN_FLAG", columnList = "useFlag, delFlag")
     }
 )
-@TableComment(value = "권한 관리 > 계정 관리", extend = "EntityExtension")
+@TableComment(value = "권한 관리 > 계정 관리", extend = "EntityLogicalExtension")
 @Getter
 @DynamicInsert
 @DynamicUpdate
 @Inheritance(strategy = JOINED)
 @DiscriminatorColumn
 @NoArgsConstructor(access = PROTECTED)
-public class Account extends EntityLogicalExtension {
+public class Account extends EntityLogicalExtension<Long> {
 
-  @Enumerated(EnumType.STRING)
+  @Enumerated(STRING)
   @Column(nullable = false)
   @ColumnComment("계정 유형")
   protected Privilege privilege;
@@ -81,7 +84,11 @@ public class Account extends EntityLogicalExtension {
 
   @OneToOne(fetch = LAZY)
   @JoinColumn(name = "profile_id", foreignKey = @ForeignKey(name = "FK_ACCOUNT_ATTACH_PROFILE"))
+  @ColumnComment("프로필 이미지 일련 번호")
   private Attach profile;
+
+  @OneToMany(fetch = LAZY, mappedBy = "account")
+  private List<AccountHashtagMapping> hashtagList;
 
   private Account(Privilege privilege, String username, String password, String name,
       String introduce, Attach profile, Boolean useFlag) {

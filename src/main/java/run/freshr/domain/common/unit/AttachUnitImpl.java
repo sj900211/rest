@@ -1,4 +1,4 @@
-package run.freshr.domain.common.service;
+package run.freshr.domain.common.unit;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,14 +38,14 @@ public class AttachUnitImpl implements AttachUnit {
   public Boolean exists(Long id) {
     log.info("AttachUnit.exists");
 
-    return repository.existsByIdAndDelFlagFalseAndUseFlagTrue(id);
+    return repository.existsById(id);
   }
 
   @Override
   public Attach get(Long id) {
     log.info("AttachUnit.get");
 
-    return repository.findByIdAndDelFlagFalseAndUseFlagTrue(id)
+    return repository.findById(id)
         .orElseThrow(EntityNotFoundException::new);
   }
 

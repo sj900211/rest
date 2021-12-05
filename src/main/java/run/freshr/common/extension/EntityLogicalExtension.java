@@ -6,6 +6,7 @@ import static run.freshr.common.config.DefaultColumnConfig.INSERT_TIMESTAMP;
 import static run.freshr.common.config.DefaultColumnConfig.TRUE;
 import static run.freshr.common.config.DefaultColumnConfig.UPDATE_TIMESTAMP;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,12 +17,12 @@ import run.freshr.annotation.ColumnComment;
 
 @Getter
 @MappedSuperclass
-public class EntityLogicalExtension {
+public class EntityLogicalExtension<ID extends Serializable> {
 
   @Id
   @GeneratedValue(strategy = IDENTITY)
   @ColumnComment("일련 번호")
-  protected Long id;
+  protected ID id;
 
   @ColumnDefault(TRUE)
   @ColumnComment("사용 여부")

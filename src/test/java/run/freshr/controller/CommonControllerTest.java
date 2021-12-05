@@ -86,7 +86,7 @@ public class CommonControllerTest extends TestExtension {
   public void createAttach() throws Exception {
     log.info("CommonControllerTest.createAttach");
 
-    setAnonymous();
+    setSignedUser();
 
     apply();
 
@@ -147,7 +147,7 @@ public class CommonControllerTest extends TestExtension {
   public void removeAttach() throws Exception {
     log.info("CommonControllerTest.removeAttach");
 
-    setAnonymous();
+    setSignedUser();
 
     apply();
 

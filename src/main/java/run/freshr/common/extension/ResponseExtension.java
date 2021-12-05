@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseExtension {
+public class ResponseExtension<ID> {
 
-  protected Long id;
+  protected ID id;
 
   protected LocalDateTime createDt;
 

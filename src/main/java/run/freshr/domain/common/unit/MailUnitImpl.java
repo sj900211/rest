@@ -1,4 +1,4 @@
-package run.freshr.domain.common.service;
+package run.freshr.domain.common.unit;
 
 import static com.fasterxml.jackson.core.JsonEncoding.UTF8;
 import static java.util.Objects.isNull;

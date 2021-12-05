@@ -34,6 +34,8 @@ import run.freshr.common.model.ResponseModel;
 import run.freshr.domain.auth.entity.Account;
 import run.freshr.domain.auth.enumeration.Role;
 import run.freshr.domain.auth.unit.AccountUnitImpl;
+import run.freshr.domain.common.dto.response.IdResponse;
+import run.freshr.domain.common.dto.response.IdResponse.IdResponseBuilder;
 import run.freshr.response.ExceptionsResponse;
 
 @Slf4j
@@ -321,6 +323,12 @@ public class RestUtil {
     log.info("RestUtil.getConfig");
 
     return customConfig;
+  }
+
+  public static <ID> IdResponse<ID> buildId(ID id) {
+    IdResponseBuilder<ID> builder = IdResponse.builder();
+
+    return builder.id(id).build();
   }
 
   public static Long getSignedId() {

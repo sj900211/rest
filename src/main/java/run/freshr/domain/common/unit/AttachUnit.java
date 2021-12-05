@@ -1,4 +1,4 @@
-package run.freshr.domain.common.service;
+package run.freshr.domain.common.unit;
 
 import java.util.List;
 import run.freshr.common.extension.UnitDefaultExtension;

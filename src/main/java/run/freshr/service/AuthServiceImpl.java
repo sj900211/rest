@@ -33,7 +33,7 @@ import run.freshr.domain.auth.redis.AuthRefresh;
 import run.freshr.domain.auth.unit.AccountUnitImpl;
 import run.freshr.domain.auth.unit.AuthAccessUnitImpl;
 import run.freshr.domain.auth.unit.AuthRefreshUnitImpl;
-import run.freshr.domain.common.service.AttachUnitImpl;
+import run.freshr.domain.common.unit.AttachUnitImpl;
 
 @Slf4j
 @Service

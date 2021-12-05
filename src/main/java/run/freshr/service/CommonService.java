@@ -3,6 +3,7 @@ package run.freshr.service;
 import java.io.IOException;
 import org.springframework.http.ResponseEntity;
 import run.freshr.domain.common.dto.request.AttachCreateRequest;
+import run.freshr.domain.common.dto.request.IdRequest;
 
 public interface CommonService {
 
@@ -12,8 +13,16 @@ public interface CommonService {
 
   ResponseEntity<?> getAttach(Long id);
 
-  ResponseEntity<?> removeAttach(Long id);
+  ResponseEntity<?> deleteAttach(Long id);
 
   ResponseEntity<?> getAttachDownload(Long id) throws IOException;
+
+  ResponseEntity<?> createHashtag(IdRequest<String> dto);
+
+  ResponseEntity<?> existHashtag(String id);
+
+  ResponseEntity<?> getHashtag(String id);
+
+  ResponseEntity<?> deleteHashtag(String id);
 
 }

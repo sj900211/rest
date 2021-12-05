@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdResponse {
+public class IdResponse<ID> {
 
-  private Long id;
+  private ID id;
 
 }

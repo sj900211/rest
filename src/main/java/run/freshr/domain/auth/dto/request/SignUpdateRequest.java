@@ -18,6 +18,6 @@ public class SignUpdateRequest {
 
   private String introduce;
 
-  private IdRequest profile;
+  private IdRequest<Long> profile;
 
 }

@@ -10,9 +10,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class IdRequest {
+public class IdRequest<ID> {
 
   @NotNull
-  private Long id;
+  private ID id;
 
 }

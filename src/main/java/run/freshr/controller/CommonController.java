@@ -83,7 +83,7 @@ public class CommonController {
   //  /  _____  \   |  |        |  |     /  _____  \ |  `----.|  |  |  |
   // /__/     \__\  |__|        |__|    /__/     \__\ \______||__|  |__|
 
-  @Secured({SUPER, MANAGER, LEADER, COACH, USER, ANONYMOUS})
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER})
   @PostMapping(value = uriCommonAttach, consumes = MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<?> createAttach(@ModelAttribute @Valid AttachCreateRequest dto)
       throws IOException {
@@ -108,12 +108,12 @@ public class CommonController {
     return service.getAttach(id);
   }
 
-  @Secured({SUPER, MANAGER, LEADER, COACH, USER, ANONYMOUS})
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER})
   @DeleteMapping(uriCommonAttachId)
   public ResponseEntity<?> removeAttach(@PathVariable Long id) {
     log.info("CommonController.removeAttach");
 
-    return service.removeAttach(id);
+    return service.deleteAttach(id);
   }
 
   @Secured({SUPER, MANAGER, LEADER, COACH, USER, ANONYMOUS})

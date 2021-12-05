@@ -11,7 +11,7 @@ import run.freshr.common.extension.ResponseExtension;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountResponse extends ResponseExtension {
+public class AccountResponse extends ResponseExtension<Long> {
 
   private String username;
 

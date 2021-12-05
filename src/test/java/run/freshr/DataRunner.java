@@ -6,6 +6,8 @@ import static run.freshr.domain.auth.enumeration.Privilege.MANAGER;
 import static run.freshr.domain.auth.enumeration.Privilege.SUPER;
 import static run.freshr.domain.auth.enumeration.Privilege.USER;
 
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -13,6 +15,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import run.freshr.service.TestService;
+import run.freshr.util.StringUtil;
 
 @Slf4j
 @Profile("test")
@@ -25,6 +28,7 @@ public class DataRunner implements ApplicationRunner {
   public static long coachId; // 코치 계정 일련 번호
   public static long userId; // 사용자 계정 일련 번호
   public static long attachId; // 파일 일련 번호
+  public static List<String> hashtagList = new ArrayList<>(); // 해시태그 목록
 
   @Autowired
   private TestService testService;
@@ -46,6 +50,7 @@ public class DataRunner implements ApplicationRunner {
 
     setAuth();
     setCommon();
+    setMapping();
   }
 
   private void setAuth() {
@@ -57,7 +62,26 @@ public class DataRunner implements ApplicationRunner {
   }
 
   private void setCommon() {
-    attachId = testService.createAttach("test.png", "temp");
+    attachId = testService
+        .createAttach("test.png", "temp", testService.getAccount(userId));
+
+    for (int i = 0; i < 15; i++) {
+      String padding = StringUtil.padding(i + 1, 3);
+
+      hashtagList.add(testService.createHashtag(padding));
+    }
+  }
+
+  private void setMapping() {
+//    hashtagList.stream()
+//        .map(item -> testService.getHashtag(item))
+//        .forEach(hashtag -> {
+//          testService.createAccountHashtagMapping(testService.getAccount(superId), hashtag);
+//          testService.createAccountHashtagMapping(testService.getAccount(managerId), hashtag);
+//          testService.createAccountHashtagMapping(testService.getAccount(leaderId), hashtag);
+//          testService.createAccountHashtagMapping(testService.getAccount(coachId), hashtag);
+//          testService.createAccountHashtagMapping(testService.getAccount(userId), hashtag);
+//        });
   }
 
 }

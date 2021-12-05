@@ -1,5 +1,6 @@
 package run.freshr.common.extension;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,9 +10,9 @@ import run.freshr.domain.auth.dto.response.AuditResponse;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ResponseAuditPhysicalExtension {
+public class ResponseAuditPhysicalExtension<ID extends Serializable> {
 
-  protected Long id;
+  protected ID id;
 
   protected LocalDateTime createDt;
 

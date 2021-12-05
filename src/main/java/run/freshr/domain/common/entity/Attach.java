@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.Getter;
@@ -18,21 +17,19 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import run.freshr.annotation.ColumnComment;
 import run.freshr.annotation.TableComment;
-import run.freshr.common.extension.EntityLogicalExtension;
+import run.freshr.common.extension.EntityAuditPhysicalExtension;
+import run.freshr.domain.auth.entity.Account;
 import run.freshr.service.PhysicalAttachService;
 
 @Slf4j
 @Entity
-@Table(
-    name = "TB_COM_ATTACH",
-    indexes = @Index(name = "IDX_COM_ATTACH_FLAG", columnList = "useFlag, delFlag")
-)
-@TableComment(value = "공통 관리 > 첨부파일 관리", extend = "EntityExtension")
+@Table(name = "TB_COM_ATTACH")
+@TableComment(value = "공통 관리 > 첨부파일 관리", extend = "EntityAuditPhysicalExtension")
 @Getter
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor(access = PROTECTED)
-public class Attach extends EntityLogicalExtension {
+public class Attach extends EntityAuditPhysicalExtension<Long> {
 
   @ColumnComment("파일 유형")
   private String contentType;
@@ -59,7 +56,7 @@ public class Attach extends EntityLogicalExtension {
   private URL url;
 
   private Attach(String contentType, String filename, String path, Long size, String alt,
-      String title) {
+      String title, Account creator) {
     log.info("Attach.Constructor");
 
     this.contentType = contentType;
@@ -68,13 +65,14 @@ public class Attach extends EntityLogicalExtension {
     this.size = size;
     this.alt = alt;
     this.title = title;
+    this.creator = creator;
   }
 
   public static Attach createEntity(String contentType, String filename, String path, Long size,
-      String alt, String title) {
+      String alt, String title, Account creator) {
     log.info("Attach.createEntity");
 
-    return new Attach(contentType, filename, path, size, alt, title);
+    return new Attach(contentType, filename, path, size, alt, title, creator);
   }
 
   public URL getUrl() throws MalformedURLException {

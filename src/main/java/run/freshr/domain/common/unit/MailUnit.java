@@ -1,4 +1,4 @@
-package run.freshr.domain.common.service;
+package run.freshr.domain.common.unit;
 
 import run.freshr.domain.common.dto.send.EmailSend;
 

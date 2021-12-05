@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class AttachSortRequest {
 
   @NotEmpty
-  private IdRequest attach;
+  private IdRequest<Long> attach;
 
   @NotEmpty
   @Size(min = 1)
