@@ -5,6 +5,7 @@ import static run.freshr.common.util.RestUtil.buildId;
 import static run.freshr.common.util.RestUtil.error;
 import static run.freshr.common.util.RestUtil.getExceptions;
 import static run.freshr.common.util.RestUtil.getSignedAccount;
+import static run.freshr.common.util.RestUtil.getSignedRole;
 import static run.freshr.common.util.RestUtil.ok;
 import static run.freshr.util.MapperUtil.map;
 
@@ -27,6 +28,8 @@ import run.freshr.domain.common.entity.Attach;
 import run.freshr.domain.common.entity.Hashtag;
 import run.freshr.domain.common.unit.AttachUnit;
 import run.freshr.domain.common.unit.HashtagUnit;
+import run.freshr.domain.mapping.unit.AccountHashtagMappingUnit;
+import run.freshr.domain.mapping.unit.PostHashtagMappingUnit;
 import run.freshr.response.PhysicalAttachResultResponse;
 
 @Slf4j
@@ -37,6 +40,8 @@ public class CommonServiceImpl implements CommonService {
 
   private final AttachUnit attachUnit;
   private final HashtagUnit hashtagUnit;
+  private final AccountHashtagMappingUnit accountHashtagMappingUnit;
+  private final PostHashtagMappingUnit postHashtagMappingUnit;
 
   private final PhysicalAttachService physicalAttachService;
 
@@ -135,6 +140,12 @@ public class CommonServiceImpl implements CommonService {
   // |__|  |__| /__/     \__\ |_______/    |__|  |__|     |__|    /__/     \__\ \______|
 
   @Override
+  public ResponseEntity<?> getHashtagList() {
+    return ok(hashtagUnit.getList(getSignedRole()));
+  }
+
+  @Override
+  @Transactional
   public ResponseEntity<?> createHashtag(IdRequest<String> dto) {
     hashtagUnit.create(Hashtag.createEntity(dto.getId()));
 
@@ -152,7 +163,13 @@ public class CommonServiceImpl implements CommonService {
   }
 
   @Override
+  @Transactional
   public ResponseEntity<?> deleteHashtag(String id) {
+    Hashtag entity = hashtagUnit.get(id);
+
+    accountHashtagMappingUnit.delete(entity);
+    postHashtagMappingUnit.delete(entity);
+
     hashtagUnit.delete(id);
 
     return ok();

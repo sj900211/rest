@@ -29,7 +29,7 @@ import run.freshr.service.PhysicalAttachService;
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor(access = PROTECTED)
-public class Attach extends EntityAuditPhysicalExtension<Long> {
+public class Attach extends EntityAuditPhysicalExtension {
 
   @ColumnComment("파일 유형")
   private String contentType;

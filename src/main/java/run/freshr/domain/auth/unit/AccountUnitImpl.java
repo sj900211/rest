@@ -53,6 +53,7 @@ public class AccountUnitImpl implements AccountUnit {
   }
 
   @Override
+  @Transactional
   public void delete(Long id) {
     log.info("AccountUnit.delete");
 

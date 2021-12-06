@@ -10,6 +10,8 @@ import static run.freshr.common.config.URIConfig.uriCommonAttachId;
 import static run.freshr.common.config.URIConfig.uriCommonAttachIdDownload;
 import static run.freshr.common.config.URIConfig.uriCommonEnum;
 import static run.freshr.common.config.URIConfig.uriCommonEnumPick;
+import static run.freshr.common.config.URIConfig.uriCommonHashtag;
+import static run.freshr.common.config.URIConfig.uriCommonHashtagId;
 import static run.freshr.common.config.URIConfig.uriCommonHeartbeat;
 import static run.freshr.common.util.RestUtil.getConfig;
 import static run.freshr.common.util.RestUtil.ok;
@@ -31,8 +33,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import run.freshr.domain.common.dto.request.AttachCreateRequest;
+import run.freshr.domain.common.dto.request.IdRequest;
 import run.freshr.mapper.EnumMapper;
 import run.freshr.service.CommonService;
 
@@ -122,6 +126,37 @@ public class CommonController {
     log.info("CommonController.getAttachDownload");
 
     return service.getAttachDownload(id);
+  }
+
+  //  __    __       ___           _______. __    __  .___________.    ___       _______
+  // |  |  |  |     /   \         /       ||  |  |  | |           |   /   \     /  _____|
+  // |  |__|  |    /  ^  \       |   (----`|  |__|  | `---|  |----`  /  ^  \   |  |  __
+  // |   __   |   /  /_\  \       \   \    |   __   |     |  |      /  /_\  \  |  | |_ |
+  // |  |  |  |  /  _____  \  .----)   |   |  |  |  |     |  |     /  _____  \ |  |__| |
+  // |__|  |__| /__/     \__\ |_______/    |__|  |__|     |__|    /__/     \__\ \______|
+
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER, ANONYMOUS})
+  @GetMapping(uriCommonHashtag)
+  public ResponseEntity<?> getHashtagList() {
+    log.info("CommonController.getHashtagList");
+
+    return service.getHashtagList();
+  }
+
+  @Secured({SUPER, MANAGER})
+  @PostMapping(uriCommonHashtag)
+  public ResponseEntity<?> createHashtag(@RequestBody @Valid IdRequest<String> dto) {
+    log.info("CommonController.createHashtag");
+
+    return service.createHashtag(dto);
+  }
+
+  @Secured({SUPER, MANAGER})
+  @DeleteMapping(uriCommonHashtagId)
+  public ResponseEntity<?> deleteHashtag(@PathVariable String id) {
+    log.info("CommonController.deleteHashtag");
+
+    return service.deleteHashtag(id);
   }
 
 }

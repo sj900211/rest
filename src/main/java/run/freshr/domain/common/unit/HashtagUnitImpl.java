@@ -1,10 +1,13 @@
 package run.freshr.domain.common.unit;
 
+import java.util.List;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import run.freshr.annotation.Unit;
+import run.freshr.domain.auth.enumeration.Role;
+import run.freshr.domain.common.dto.response.HashtagListResponse;
 import run.freshr.domain.common.entity.Hashtag;
 import run.freshr.domain.common.repository.HashtagRepository;
 
@@ -40,10 +43,18 @@ public class HashtagUnitImpl implements HashtagUnit {
   }
 
   @Override
+  @Transactional
   public void delete(String id) {
     log.info("HashtagUnit.delete");
 
     repository.deleteById(id);
+  }
+
+  @Override
+  public List<HashtagListResponse> getList(Role role) {
+    log.info("HashtagUnit.getList");
+
+    return repository.getList(role);
   }
 
 }

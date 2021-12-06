@@ -44,6 +44,7 @@ public class AccountHashtagMappingUnitImpl implements AccountHashtagMappingUnit 
   }
 
   @Override
+  @Transactional
   public void delete(AccountHashtagMappingEmbeddedId id) {
     log.info("AccountHashtagMappingUnit.delete");
 
@@ -66,6 +67,7 @@ public class AccountHashtagMappingUnitImpl implements AccountHashtagMappingUnit 
   }
 
   @Override
+  @Transactional
   public void delete(Account entity) {
     log.info("AccountHashtagMappingUnit.delete");
 
@@ -73,6 +75,7 @@ public class AccountHashtagMappingUnitImpl implements AccountHashtagMappingUnit 
   }
 
   @Override
+  @Transactional
   public void delete(Hashtag entity) {
     log.info("AccountHashtagMappingUnit.delete");
 

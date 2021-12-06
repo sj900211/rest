@@ -39,6 +39,7 @@ public class PostUnitImpl implements PostUnit {
   }
 
   @Override
+  @Transactional
   public void delete(Long id) {
     log.info("PostUnitImpl.delete");
 

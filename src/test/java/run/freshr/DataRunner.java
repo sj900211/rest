@@ -50,6 +50,7 @@ public class DataRunner implements ApplicationRunner {
 
     setAuth();
     setCommon();
+    setBlog();
     setMapping();
   }
 
@@ -72,16 +73,20 @@ public class DataRunner implements ApplicationRunner {
     }
   }
 
+  private void setBlog() {
+    //
+  }
+
   private void setMapping() {
-//    hashtagList.stream()
-//        .map(item -> testService.getHashtag(item))
-//        .forEach(hashtag -> {
-//          testService.createAccountHashtagMapping(testService.getAccount(superId), hashtag);
-//          testService.createAccountHashtagMapping(testService.getAccount(managerId), hashtag);
-//          testService.createAccountHashtagMapping(testService.getAccount(leaderId), hashtag);
-//          testService.createAccountHashtagMapping(testService.getAccount(coachId), hashtag);
-//          testService.createAccountHashtagMapping(testService.getAccount(userId), hashtag);
-//        });
+    hashtagList.stream()
+        .map(item -> testService.getHashtag(item))
+        .forEach(hashtag -> {
+          testService.createAccountHashtagMapping(testService.getAccount(superId), hashtag);
+          testService.createAccountHashtagMapping(testService.getAccount(managerId), hashtag);
+          testService.createAccountHashtagMapping(testService.getAccount(leaderId), hashtag);
+          testService.createAccountHashtagMapping(testService.getAccount(coachId), hashtag);
+          testService.createAccountHashtagMapping(testService.getAccount(userId), hashtag);
+        });
   }
 
 }

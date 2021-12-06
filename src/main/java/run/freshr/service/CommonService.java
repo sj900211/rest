@@ -17,6 +17,8 @@ public interface CommonService {
 
   ResponseEntity<?> getAttachDownload(Long id) throws IOException;
 
+  ResponseEntity<?> getHashtagList();
+
   ResponseEntity<?> createHashtag(IdRequest<String> dto);
 
   ResponseEntity<?> existHashtag(String id);

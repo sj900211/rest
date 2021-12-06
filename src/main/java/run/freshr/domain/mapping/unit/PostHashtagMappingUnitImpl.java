@@ -44,6 +44,7 @@ public class PostHashtagMappingUnitImpl implements PostHashtagMappingUnit {
   }
 
   @Override
+  @Transactional
   public void delete(PostHashtagMappingEmbeddedId id) {
     log.info("PostHashtagMappingUnit.delete");
 
@@ -66,6 +67,7 @@ public class PostHashtagMappingUnitImpl implements PostHashtagMappingUnit {
   }
 
   @Override
+  @Transactional
   public void delete(Post entity) {
     log.info("PostHashtagMappingUnit.delete");
 
@@ -73,6 +75,7 @@ public class PostHashtagMappingUnitImpl implements PostHashtagMappingUnit {
   }
 
   @Override
+  @Transactional
   public void delete(Hashtag entity) {
     log.info("PostHashtagMappingUnit.delete");
 

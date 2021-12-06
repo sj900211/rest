@@ -57,6 +57,7 @@ public class AttachUnitImpl implements AttachUnit {
   }
 
   @Override
+  @Transactional
   public void delete(Long id) {
     log.info("AttachUnit.delete");
 

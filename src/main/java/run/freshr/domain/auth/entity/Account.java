@@ -53,7 +53,7 @@ import run.freshr.domain.mapping.entity.AccountHashtagMapping;
 @Inheritance(strategy = JOINED)
 @DiscriminatorColumn
 @NoArgsConstructor(access = PROTECTED)
-public class Account extends EntityLogicalExtension<Long> {
+public class Account extends EntityLogicalExtension {
 
   @Enumerated(STRING)
   @Column(nullable = false)

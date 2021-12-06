@@ -26,7 +26,7 @@ import run.freshr.domain.mapping.embedded.PostHashtagMappingEmbeddedId;
 
 @Slf4j
 @Entity
-@Table(name = "TB_MAP_ACCOUNT_HASHTAG")
+@Table(name = "TB_MAP_POST_HASHTAG")
 @TableComment(value = "공통 관리 > 첨부파일 관리")
 @Getter
 @DynamicInsert
