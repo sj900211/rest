@@ -3,10 +3,13 @@ package run.freshr.domain.blog.unit;
 import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import run.freshr.annotation.Unit;
+import run.freshr.domain.auth.enumeration.Role;
 import run.freshr.domain.blog.entity.Post;
 import run.freshr.domain.blog.repository.PostRepository;
+import run.freshr.domain.blog.vo.BlogSearch;
 
 @Slf4j
 @Unit
@@ -46,4 +49,10 @@ public class PostUnitImpl implements PostUnit {
     repository.deleteById(id);
   }
 
+  @Override
+  public Page<Post> getPage(BlogSearch search, Role role) {
+    log.info("PostUnitImpl.getPage");
+
+    return repository.getPage(search, role);
+  }
 }

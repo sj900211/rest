@@ -13,7 +13,7 @@ import run.freshr.domain.mapping.dto.request.PostHashtagMappingForPostCreateRequ
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostCreateRequest {
+public class PostUpdateRequest {
 
   @NotEmpty
   @Size(max = 100)

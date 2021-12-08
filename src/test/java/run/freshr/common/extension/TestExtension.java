@@ -1,5 +1,6 @@
 package run.freshr.common.extension;
 
+import static java.util.Arrays.stream;
 import static java.util.List.of;
 import static java.util.Objects.isNull;
 import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
@@ -32,7 +33,6 @@ import static run.freshr.domain.auth.enumeration.Role.ROLE_SUPER;
 import static run.freshr.domain.auth.enumeration.Role.ROLE_USER;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.Arrays;
 import java.util.List;
 import javax.persistence.EntityManager;
 import lombok.extern.slf4j.Slf4j;
@@ -184,7 +184,7 @@ public class TestExtension {
     MockHttpServletRequestBuilder mockHttpServletRequestBuilder = get(uri, pathVariables);
 
     if (!isNull(search)) {
-      Arrays.stream(search.getClass().getDeclaredFields()).forEach(field -> {
+      stream(search.getClass().getDeclaredFields()).forEach(field -> {
         try {
           field.setAccessible(true);
 
@@ -210,7 +210,7 @@ public class TestExtension {
         }
       });
 
-      Arrays.stream(search.getClass().getSuperclass().getDeclaredFields()).forEach(field -> {
+      stream(search.getClass().getSuperclass().getDeclaredFields()).forEach(field -> {
         try {
           field.setAccessible(true);
 

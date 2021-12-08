@@ -1,12 +1,12 @@
 package run.freshr.domain.auth.enumeration;
 
+import static java.util.Arrays.stream;
 import static run.freshr.domain.auth.enumeration.Role.ROLE_COACH;
 import static run.freshr.domain.auth.enumeration.Role.ROLE_LEADER;
 import static run.freshr.domain.auth.enumeration.Role.ROLE_MANAGER;
 import static run.freshr.domain.auth.enumeration.Role.ROLE_SUPER;
 import static run.freshr.domain.auth.enumeration.Role.ROLE_USER;
 
-import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 import run.freshr.mapper.EnumModel;
 
@@ -30,7 +30,7 @@ public enum Privilege implements EnumModel {
   public static Privilege find(String key) {
     log.info("Privilege.find");
 
-    return Arrays.stream(Privilege.values())
+    return stream(Privilege.values())
         .filter(item -> item.getKey().equalsIgnoreCase(key))
         .findAny()
         .orElse(null);

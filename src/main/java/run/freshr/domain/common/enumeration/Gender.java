@@ -1,6 +1,7 @@
 package run.freshr.domain.common.enumeration;
 
-import java.util.Arrays;
+import static java.util.Arrays.stream;
+
 import lombok.extern.slf4j.Slf4j;
 import run.freshr.mapper.EnumModel;
 
@@ -19,7 +20,7 @@ public enum Gender implements EnumModel {
   public static Gender find(String key) {
     log.info("Gender.find");
 
-    return Arrays.stream(Gender.values())
+    return stream(Gender.values())
         .filter(item -> item.getKey().equalsIgnoreCase(key))
         .findAny()
         .orElse(null);

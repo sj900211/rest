@@ -9,6 +9,7 @@ import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import run.freshr.domain.auth.enumeration.Privilege;
+import run.freshr.domain.blog.enumeration.PostPageKeys;
 import run.freshr.domain.common.enumeration.Gender;
 import run.freshr.mapper.EnumMapper;
 import run.freshr.mapper.EnumModel;
@@ -18,7 +19,8 @@ public class EnumConfig {
 
   private final List<Class<? extends EnumModel>> enums = new ArrayList<>(of(
       Gender.class,
-      Privilege.class
+      Privilege.class,
+      PostPageKeys.class
   ));
 
   @Bean

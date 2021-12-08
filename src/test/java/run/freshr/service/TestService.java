@@ -2,7 +2,7 @@ package run.freshr.service;
 
 import static run.freshr.common.util.SignUtil.signedAccess;
 import static run.freshr.common.util.SignUtil.signedRefresh;
-import static run.freshr.domain.common.enumeration.Permission.PASS;
+import static run.freshr.domain.blog.enumeration.PostPermission.B111111;
 
 import java.util.List;
 import java.util.Map;
@@ -160,7 +160,7 @@ public class TestService {
         + "```";
 
     return postUnit.create(Post
-        .createEntity("TITLE " + padding, contents, PASS, PASS, PASS, PASS, PASS, creator));
+        .createEntity("TITLE " + padding, contents, B111111, creator));
   }
 
   public Post getPost(long id) {
