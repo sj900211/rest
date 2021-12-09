@@ -8,6 +8,7 @@ import static run.freshr.common.config.URIConfig.uriCommonAttach;
 import static run.freshr.common.config.URIConfig.uriCommonAttachExist;
 import static run.freshr.common.config.URIConfig.uriCommonAttachId;
 import static run.freshr.common.config.URIConfig.uriCommonAttachIdDownload;
+import static run.freshr.common.config.URIConfig.uriCommonCrypto;
 import static run.freshr.common.config.URIConfig.uriCommonEnum;
 import static run.freshr.common.config.URIConfig.uriCommonEnumPick;
 import static run.freshr.common.config.URIConfig.uriCommonHashtag;
@@ -78,6 +79,19 @@ public class CommonController {
     log.info("CommonController.getEnum");
 
     return ok(enumMapper.get(pick.toLowerCase()));
+  }
+
+  //   ______ .______     ____    ____ .______   .___________.  ______
+  //  /      ||   _  \    \   \  /   / |   _  \  |           | /  __  \
+  // |  ,----'|  |_)  |    \   \/   /  |  |_)  | `---|  |----`|  |  |  |
+  // |  |     |      /      \_    _/   |   ___/      |  |     |  |  |  |
+  // |  `----.|  |\  \----.   |  |     |  |          |  |     |  `--'  |
+  //  \______|| _| `._____|   |__|     | _|          |__|      \______/
+
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER, ANONYMOUS})
+  @GetMapping(uriCommonCrypto)
+  public ResponseEntity<?> getPublicKey() {
+    return service.getPublicKey();
   }
 
   //      ___   .___________.___________.    ___       ______  __    __

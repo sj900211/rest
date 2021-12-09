@@ -360,4 +360,10 @@ public class TestExtension {
     signedId.remove();
   }
 
+  protected void setRsa() {
+    log.info("TestExtension.setRsa");
+
+    testService.createRsa();
+  }
+
 }

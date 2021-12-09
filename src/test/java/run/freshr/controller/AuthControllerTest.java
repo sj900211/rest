@@ -10,9 +10,10 @@ import static run.freshr.common.config.URIConfig.uriAuthPassword;
 import static run.freshr.common.config.URIConfig.uriAuthSignIn;
 import static run.freshr.common.config.URIConfig.uriAuthSignOut;
 import static run.freshr.common.config.URIConfig.uriAuthToken;
-import static run.freshr.common.util.SignUtil.signedAccess;
+import static run.freshr.common.util.ThreadUtil.threadAccess;
+import static run.freshr.common.util.ThreadUtil.threadPublicKey;
 import static run.freshr.domain.auth.enumeration.Role.ROLE_SUPER;
-import static run.freshr.util.CryptoUtil.encodeBase64;
+import static run.freshr.util.CryptoUtil.encryptRsa;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +23,11 @@ import run.freshr.annotation.DocsMethod;
 import run.freshr.common.extension.TestExtension;
 import run.freshr.common.security.SecurityUtil;
 import run.freshr.domain.auth.AccountDocs;
+import run.freshr.domain.auth.AccountDocs.Request;
 import run.freshr.domain.auth.dto.request.SignChangePasswordRequest;
 import run.freshr.domain.auth.dto.request.SignInRequest;
 import run.freshr.domain.auth.dto.request.SignUpdateRequest;
+import run.freshr.domain.common.dto.request.IdRequest;
 
 @Slf4j
 @DocsClass(name = "auth", description = "권한 관리")
@@ -59,6 +62,7 @@ public class AuthControllerTest extends TestExtension {
     log.info("AuthControllerTest.signIn");
 
     setAnonymous();
+    setRsa();
 
     apply();
 
@@ -66,8 +70,10 @@ public class AuthControllerTest extends TestExtension {
         uriAuthSignIn,
         SignInRequest
             .builder()
-            .username(encodeBase64(testService.getAccount(managerId).getUsername()))
-            .password(encodeBase64("1234"))
+            .rsa(threadPublicKey.get())
+            .username(encryptRsa(testService.getAccount(managerId).getUsername(),
+                threadPublicKey.get()))
+            .password(encryptRsa("1234", threadPublicKey.get()))
             .build()
     ).andDo(print())
         .andDo(docs(
@@ -87,7 +93,7 @@ public class AuthControllerTest extends TestExtension {
 
     apply();
 
-    POST_TOKEN(uriAuthSignOut, signedAccess.get())
+    POST_TOKEN(uriAuthSignOut, threadAccess.get())
         .andDo(print())
         .andExpect(status().isOk());
   }
@@ -99,6 +105,7 @@ public class AuthControllerTest extends TestExtension {
     log.info("AuthControllerTest.updatePassword");
 
     setSignedUser();
+    setRsa();
 
     apply();
 
@@ -106,8 +113,9 @@ public class AuthControllerTest extends TestExtension {
         uriAuthPassword,
         SignChangePasswordRequest
             .builder()
-            .originPassword(encodeBase64("1234"))
-            .password(encodeBase64("input password"))
+            .rsa(threadPublicKey.get())
+            .originPassword(encryptRsa("1234", threadPublicKey.get()))
+            .password(encryptRsa("input password", threadPublicKey.get()))
             .build()
     ).andDo(print())
         .andDo(docs(requestFields(AccountDocs.Request.updatePassword())))
@@ -137,6 +145,10 @@ public class AuthControllerTest extends TestExtension {
     log.info("AuthControllerTest.updateInfo");
 
     setSignedManager();
+    setRsa();
+
+    long profileId = testService
+        .createAttach("profile.png", "account", testService.getAccount(getSignedId()));
 
     apply();
 
@@ -144,10 +156,13 @@ public class AuthControllerTest extends TestExtension {
         uriAuthInfo,
         SignUpdateRequest
             .builder()
-            .name(encodeBase64("input name"))
+            .rsa(threadPublicKey.get())
+            .name(encryptRsa("input name", threadPublicKey.get()))
+            .introduce(encryptRsa("input introduce", threadPublicKey.get()))
+            .profile(IdRequest.<Long>builder().id(profileId).build())
             .build()
     ).andDo(print())
-        .andDo(docs(requestFields(AccountDocs.Request.updateInfo())))
+        .andDo(docs(requestFields(Request.updateInfo())))
         .andExpect(status().isOk());
   }
 

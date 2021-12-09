@@ -5,8 +5,11 @@ import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
 import static java.util.Optional.ofNullable;
 import static run.freshr.common.util.RestUtil.error;
+import static run.freshr.common.util.RestUtil.getExceptions;
+import static run.freshr.common.util.RestUtil.getSignedAccount;
+import static run.freshr.common.util.RestUtil.getSignedId;
 import static run.freshr.common.util.RestUtil.ok;
-import static run.freshr.util.CryptoUtil.decodeBase64;
+import static run.freshr.util.CryptoUtil.decryptRsa;
 import static run.freshr.util.MapperUtil.map;
 
 import java.time.LocalDateTime;
@@ -19,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import run.freshr.common.model.ResponseModel;
 import run.freshr.common.security.SecurityUtil;
-import run.freshr.common.util.RestUtil;
 import run.freshr.domain.auth.dto.request.SignChangePasswordRequest;
 import run.freshr.domain.auth.dto.request.SignInRequest;
 import run.freshr.domain.auth.dto.request.SignUpdateRequest;
@@ -33,7 +35,9 @@ import run.freshr.domain.auth.redis.AuthRefresh;
 import run.freshr.domain.auth.unit.AccountUnitImpl;
 import run.freshr.domain.auth.unit.AuthAccessUnitImpl;
 import run.freshr.domain.auth.unit.AuthRefreshUnitImpl;
+import run.freshr.domain.common.redis.RsaPair;
 import run.freshr.domain.common.unit.AttachUnitImpl;
+import run.freshr.domain.common.unit.RsaPairUnit;
 
 @Slf4j
 @Service
@@ -46,6 +50,7 @@ public class AuthServiceImpl implements AuthService {
 
   private final AuthAccessUnitImpl authAccessUnit;
   private final AuthRefreshUnitImpl authRefreshUnit;
+  private final RsaPairUnit rsaPairUnit;
 
   private final PasswordEncoder passwordEncoder;
 
@@ -54,24 +59,33 @@ public class AuthServiceImpl implements AuthService {
   public ResponseEntity<?> signIn(SignInRequest dto) {
     log.info("AuthService.signIn");
 
-    String username = decodeBase64(dto.getUsername());
+    String encodePublicKey = dto.getRsa();
+
+    if (!rsaPairUnit.checkRsa(encodePublicKey)) {
+      return error(getExceptions().getAccessDenied());
+    }
+
+    RsaPair redis = rsaPairUnit.get(encodePublicKey);
+    String encodePrivateKey = redis.getEncodePrivateKey();
+    String username = decryptRsa(dto.getUsername(), encodePrivateKey);
 
     if (!accountUnit.exists(username)) {
-      return error(RestUtil.getExceptions().getEntityNotFound());
+      return error(getExceptions().getEntityNotFound());
     }
 
     Account entity = accountUnit.get(username);
 
     if (entity.getDelFlag()) {
-      return error(RestUtil.getExceptions().getEntityNotFound());
+      return error(getExceptions().getEntityNotFound());
     }
 
     if (!entity.getUseFlag()) {
-      return error(RestUtil.getExceptions().getUnAuthenticated());
+      return error(getExceptions().getUnAuthenticated());
     }
 
-    if (!passwordEncoder.matches(decodeBase64(dto.getPassword()), entity.getPassword())) {
-      return error(RestUtil.getExceptions().getUnAuthenticated());
+    if (!passwordEncoder
+        .matches(decryptRsa(dto.getPassword(), encodePrivateKey), entity.getPassword())) {
+      return error(getExceptions().getUnAuthenticated());
     }
 
     entity.updateSignDt();
@@ -108,7 +122,7 @@ public class AuthServiceImpl implements AuthService {
 
     authAccessUnit.delete(token);
 
-    return RestUtil.ok();
+    return ok();
   }
 
   @Override
@@ -116,15 +130,25 @@ public class AuthServiceImpl implements AuthService {
   public ResponseEntity<?> updatePassword(SignChangePasswordRequest dto) {
     log.info("AuthService.updatePassword");
 
-    Account entity = accountUnit.get(RestUtil.getSignedId());
+    String encodePublicKey = dto.getRsa();
 
-    if (!passwordEncoder.matches(decodeBase64(dto.getOriginPassword()), entity.getPassword())) {
-      return error(RestUtil.getExceptions().getUnAuthenticated());
+    if (!rsaPairUnit.checkRsa(encodePublicKey)) {
+      return error(getExceptions().getAccessDenied());
     }
 
-    entity.updatePassword(passwordEncoder.encode(decodeBase64(dto.getPassword())));
+    RsaPair redis = rsaPairUnit.get(encodePublicKey);
+    String encodePrivateKey = redis.getEncodePrivateKey();
 
-    return RestUtil.ok();
+    Account entity = accountUnit.get(getSignedId());
+
+    if (!passwordEncoder
+        .matches(decryptRsa(dto.getOriginPassword(), encodePrivateKey), entity.getPassword())) {
+      return error(getExceptions().getUnAuthenticated());
+    }
+
+    entity.updatePassword(passwordEncoder.encode(decryptRsa(dto.getPassword(), encodePrivateKey)));
+
+    return ok();
   }
 
   @Override
@@ -136,7 +160,7 @@ public class AuthServiceImpl implements AuthService {
 
     // Authorization 값이 없을 때
     if (jwt.equals("")) {
-      return error(RestUtil.getExceptions().getUnAuthenticated());
+      return error(getExceptions().getUnAuthenticated());
     }
 
     // Bearer 문자 제거 -> Token 값만 추출
@@ -144,7 +168,7 @@ public class AuthServiceImpl implements AuthService {
 
     // Refresh Token 이 메모리에 있는지 체크
     if (!authRefreshUnit.exists(refreshToken)) {
-      return error(RestUtil.getExceptions().getUnAuthenticated());
+      return error(getExceptions().getUnAuthenticated());
     }
 
     AuthRefresh refresh = authRefreshUnit.get(refreshToken); // Refresh Token 상세 조회
@@ -161,7 +185,7 @@ public class AuthServiceImpl implements AuthService {
       authAccessUnit.delete(accessToken);
       authRefreshUnit.delete(refreshToken);
 
-      return error(RestUtil.getExceptions().getUnAuthenticated());
+      return error(getExceptions().getUnAuthenticated());
     }
 
     // 새로운 Access Token 발급
@@ -188,9 +212,9 @@ public class AuthServiceImpl implements AuthService {
   public ResponseEntity<?> getInfo() {
     log.info("AuthService.getInfo");
 
-    return RestUtil.ok(ResponseModel
+    return ok(ResponseModel
         .builder()
-        .data(map(RestUtil.getSignedAccount(), AccountResponse.class))
+        .data(map(getSignedAccount(), AccountResponse.class))
         .build());
   }
 
@@ -199,16 +223,25 @@ public class AuthServiceImpl implements AuthService {
   public ResponseEntity<?> updateInfo(SignUpdateRequest dto) {
     log.info("AuthService.updateInfo");
 
-    RestUtil.getSignedAccount()
+    String encodePublicKey = dto.getRsa();
+
+    if (!rsaPairUnit.checkRsa(encodePublicKey)) {
+      return error(getExceptions().getAccessDenied());
+    }
+
+    RsaPair redis = rsaPairUnit.get(encodePublicKey);
+    String encodePrivateKey = redis.getEncodePrivateKey();
+
+    getSignedAccount()
         .updateEntity(
-            decodeBase64(dto.getName()),
+            decryptRsa(dto.getName(), encodePrivateKey),
             dto.getIntroduce(),
             !isNull(dto.getProfile()) && !isNull(dto.getProfile().getId())
                 ? attachUnit.get(dto.getProfile().getId())
                 : null
         );
 
-    return RestUtil.ok();
+    return ok();
   }
 
   @Override
@@ -216,14 +249,14 @@ public class AuthServiceImpl implements AuthService {
   public ResponseEntity<?> removeInfo() {
     log.info("AuthService.removeInfo");
 
-    Long id = RestUtil.getSignedId();
+    Long id = getSignedId();
 
-    RestUtil.getSignedAccount().removeEntity();
+    getSignedAccount().removeEntity();
 
     authRefreshUnit.delete(authAccessUnit.get(id));
     authAccessUnit.delete(id);
 
-    return RestUtil.ok();
+    return ok();
   }
 
 }

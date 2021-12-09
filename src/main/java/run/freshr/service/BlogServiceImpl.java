@@ -6,8 +6,10 @@ import static run.freshr.common.util.RestUtil.getExceptions;
 import static run.freshr.common.util.RestUtil.getSignedAccount;
 import static run.freshr.common.util.RestUtil.getSignedRole;
 import static run.freshr.common.util.RestUtil.ok;
+import static run.freshr.domain.auth.enumeration.Role.ROLE_ANONYMOUS;
 import static run.freshr.domain.auth.enumeration.Role.ROLE_MANAGER;
 import static run.freshr.domain.auth.enumeration.Role.ROLE_SUPER;
+import static run.freshr.util.CryptoUtil.decryptRsa;
 import static run.freshr.util.MapperUtil.map;
 
 import java.util.List;
@@ -26,6 +28,8 @@ import run.freshr.domain.blog.entity.Post;
 import run.freshr.domain.blog.enumeration.PostPermission;
 import run.freshr.domain.blog.unit.PostUnit;
 import run.freshr.domain.blog.vo.BlogSearch;
+import run.freshr.domain.common.redis.RsaPair;
+import run.freshr.domain.common.unit.RsaPairUnit;
 
 @Slf4j
 @Service
@@ -35,8 +39,12 @@ public class BlogServiceImpl implements BlogService {
 
   private final PostUnit postUnit;
 
+  private final RsaPairUnit rsaPairUnit;
+
   @Override
   public ResponseEntity<?> getPostPage(BlogSearch search) {
+    log.info("BlogService.getPostPage");
+
     return ok(postUnit.getPage(search, getSignedRole())
         .map(item -> map(item, PostListResponse.class)));
   }
@@ -44,11 +52,13 @@ public class BlogServiceImpl implements BlogService {
   @Override
   @Transactional
   public ResponseEntity<?> getPost(Long id) {
-    Account signedAccount = getSignedAccount();
+    log.info("BlogService.getPost");
+
     Role signedRole = getSignedRole();
     Post entity = postUnit.get(id);
     boolean checkPermission = entity.checkPermission(signedRole.getPermission());
-    boolean checkOwner = entity.checkOwner(signedAccount);
+    boolean checkOwner = !signedRole.equals(ROLE_ANONYMOUS)
+        && entity.checkOwner(getSignedAccount());
 
     if (!checkPermission && !checkOwner) {
       return error(getExceptions().getAccessDenied());
@@ -64,13 +74,24 @@ public class BlogServiceImpl implements BlogService {
   @Override
   @Transactional
   public ResponseEntity<?> createPost(PostCreateRequest dto) {
+    log.info("BlogService.createPost");
+
+    String encodePublicKey = dto.getRsa();
+
+    if (!rsaPairUnit.checkRsa(encodePublicKey)) {
+      return error(getExceptions().getAccessDenied());
+    }
+
+    RsaPair redis = rsaPairUnit.get(encodePublicKey);
+    String encodePrivateKey = redis.getEncodePrivateKey();
+
     Account signedAccount = getSignedAccount();
 
     PostPermission permission = PostPermission.find(List.of(true, dto.getManagerGrant(),
         dto.getLeaderGrant(), dto.getCoachGrant(), dto.getUserGrant(), dto.getAnonymousGrant()));
 
-    Long id = postUnit.create(Post.createEntity(dto.getTitle(), dto.getContents(),
-        permission, signedAccount));
+    Long id = postUnit.create(Post.createEntity(decryptRsa(dto.getTitle(), encodePrivateKey),
+        decryptRsa(dto.getContents(), encodePrivateKey), permission, signedAccount));
 
     return ok(buildId(id));
   }
@@ -78,6 +99,17 @@ public class BlogServiceImpl implements BlogService {
   @Override
   @Transactional
   public ResponseEntity<?> updatePost(Long id, PostUpdateRequest dto) {
+    log.info("BlogService.updatePost");
+
+    String encodePublicKey = dto.getRsa();
+
+    if (!rsaPairUnit.checkRsa(encodePublicKey)) {
+      return error(getExceptions().getAccessDenied());
+    }
+
+    RsaPair redis = rsaPairUnit.get(encodePublicKey);
+    String encodePrivateKey = redis.getEncodePrivateKey();
+
     Account signedAccount = getSignedAccount();
     Role signedRole = getSignedRole();
     Post entity = postUnit.get(id);
@@ -90,7 +122,8 @@ public class BlogServiceImpl implements BlogService {
     PostPermission permission = PostPermission.find(List.of(true, dto.getManagerGrant(),
         dto.getLeaderGrant(), dto.getCoachGrant(), dto.getUserGrant(), dto.getAnonymousGrant()));
 
-    entity.updateEntity(dto.getTitle(), dto.getContents(), permission, signedAccount);
+    entity.updateEntity(decryptRsa(dto.getTitle(), encodePrivateKey),
+        decryptRsa(dto.getContents(), encodePrivateKey), permission, signedAccount);
 
     return ok();
   }
@@ -98,6 +131,8 @@ public class BlogServiceImpl implements BlogService {
   @Override
   @Transactional
   public ResponseEntity<?> removePost(Long id) {
+    log.info("BlogService.removePost");
+
     Account signedAccount = getSignedAccount();
     Post entity = postUnit.get(id);
 

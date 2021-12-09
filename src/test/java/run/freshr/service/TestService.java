@@ -1,9 +1,14 @@
 package run.freshr.service;
 
-import static run.freshr.common.util.SignUtil.signedAccess;
-import static run.freshr.common.util.SignUtil.signedRefresh;
+import static run.freshr.common.util.ThreadUtil.threadAccess;
+import static run.freshr.common.util.ThreadUtil.threadPublicKey;
+import static run.freshr.common.util.ThreadUtil.threadRefresh;
 import static run.freshr.domain.blog.enumeration.PostPermission.B111111;
 
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -22,14 +27,17 @@ import run.freshr.domain.blog.entity.Post;
 import run.freshr.domain.blog.unit.PostUnit;
 import run.freshr.domain.common.entity.Attach;
 import run.freshr.domain.common.entity.Hashtag;
+import run.freshr.domain.common.redis.RsaPair;
 import run.freshr.domain.common.unit.AttachUnitImpl;
 import run.freshr.domain.common.unit.HashtagUnit;
+import run.freshr.domain.common.unit.RsaPairUnit;
 import run.freshr.domain.mapping.entity.AccountHashtagMapping;
 import run.freshr.domain.mapping.entity.PostHashtagMapping;
 import run.freshr.domain.mapping.unit.AccountHashtagMappingUnit;
 import run.freshr.domain.mapping.unit.PostHashtagMappingUnit;
 import run.freshr.mapper.EnumMapper;
 import run.freshr.mapper.EnumValue;
+import run.freshr.util.CryptoUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -59,15 +67,15 @@ public class TestService {
   private final AuthRefreshUnitImpl authRefreshUnit;
 
   public void createAuth(Long id, Role role) {
-    signedAccess.remove();
-    signedRefresh.remove();
+    threadAccess.remove();
+    threadRefresh.remove();
 
     // 토큰 발급
     String accessToken = SecurityUtil.createAccessToken(id);
     String refreshToken = SecurityUtil.createRefreshToken(id);
 
-    signedAccess.set(accessToken);
-    signedRefresh.set(refreshToken);
+    threadAccess.set(accessToken);
+    threadRefresh.set(refreshToken);
 
     // 토큰 등록
     authAccessUnit.save(AuthAccess.createRedis(accessToken, id, role));
@@ -101,6 +109,26 @@ public class TestService {
 
   public Account getAccount(long id) {
     return accountUnit.get(id);
+  }
+
+  //   ______ .______     ____    ____ .______   .___________.  ______
+  //  /      ||   _  \    \   \  /   / |   _  \  |           | /  __  \
+  // |  ,----'|  |_)  |    \   \/   /  |  |_)  | `---|  |----`|  |  |  |
+  // |  |     |      /      \_    _/   |   ___/      |  |     |  |  |  |
+  // |  `----.|  |\  \----.   |  |     |  |          |  |     |  `--'  |
+  //  \______|| _| `._____|   |__|     | _|          |__|      \______/
+  private final RsaPairUnit rsaPairUnit;
+
+  public void createRsa() {
+    KeyPair keyPar = CryptoUtil.getKeyPar();
+    PublicKey publicKey = keyPar.getPublic();
+    PrivateKey privateKey = keyPar.getPrivate();
+    String encodePublicKey = CryptoUtil.encodePublicKey(publicKey);
+    String encodePrivateKey = CryptoUtil.encodePrivateKey(privateKey);
+
+    threadPublicKey.set(encodePublicKey);
+
+    rsaPairUnit.save(RsaPair.createRedis(encodePublicKey, encodePrivateKey, LocalDateTime.now()));
   }
 
   //      ___   .___________.___________.    ___       ______  __    __
@@ -152,11 +180,11 @@ public class TestService {
   private final PostUnit postUnit;
 
   public long createPost(String padding, Account creator) {
-    String contents = "# CONTENTS " + padding
-        + "``` java"
-        + "private void handler() {"
-        + "    System.out.println(\"LOG " + padding + "\");"
-        + "}"
+    String contents = "# CONTENTS " + padding + "\r\n"
+        + "``` java" + "\r\n"
+        + "private void handler() {" + "\r\n"
+        + "    System.out.println(\"LOG " + padding + "\");" + "\r\n"
+        + "}" + "\r\n"
         + "```";
 
     return postUnit.create(Post

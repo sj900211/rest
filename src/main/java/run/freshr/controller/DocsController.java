@@ -4,6 +4,7 @@ import static run.freshr.common.config.URIConfig.uriDocsDepth1;
 import static run.freshr.common.config.URIConfig.uriDocsDepth2;
 import static run.freshr.common.config.URIConfig.uriDocsDepth3;
 import static run.freshr.common.config.URIConfig.uriDocsIndex;
+import static run.freshr.common.util.RestUtil.view;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import run.freshr.common.util.RestUtil;
 
 @Slf4j
 @RestController
@@ -32,7 +32,7 @@ public class DocsController {
   public ModelAndView viewDocs(@PathVariable String depth1, ModelAndView mav) {
     log.info("DocsController.viewDocs");
 
-    return RestUtil.view(mav, DOCS, depth1);
+    return view(mav, DOCS, depth1);
   }
 
   @GetMapping(uriDocsDepth2)
@@ -40,7 +40,7 @@ public class DocsController {
       ModelAndView mav) {
     log.info("DocsController.viewDocs");
 
-    return RestUtil.view(mav, DOCS, depth1, depth2);
+    return view(mav, DOCS, depth1, depth2);
   }
 
   @GetMapping(uriDocsDepth3)
@@ -48,7 +48,7 @@ public class DocsController {
       @PathVariable String depth3, ModelAndView mav) {
     log.info("DocsController.viewDocs");
 
-    return RestUtil.view(mav, DOCS, depth1, depth2, depth3);
+    return view(mav, DOCS, depth1, depth2, depth3);
   }
 
 }

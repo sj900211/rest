@@ -7,6 +7,8 @@ import run.freshr.domain.common.dto.request.IdRequest;
 
 public interface CommonService {
 
+  ResponseEntity<?> getPublicKey();
+
   ResponseEntity<?> createAttach(AttachCreateRequest dto) throws IOException;
 
   ResponseEntity<?> existAttach(Long id);

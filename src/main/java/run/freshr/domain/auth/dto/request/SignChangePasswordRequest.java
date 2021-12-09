@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 public class SignChangePasswordRequest {
 
   @NotEmpty
+  private String rsa;
+
+  @NotEmpty
   private String originPassword;
 
   @NotEmpty

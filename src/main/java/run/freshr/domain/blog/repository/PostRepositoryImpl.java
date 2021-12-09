@@ -28,7 +28,13 @@ public class PostRepositoryImpl implements PostRepositoryCustom {
     String word = search.getWord();
 
     if (hasLength(word)) {
-      query.where(searchEnum(word, PostPageKeys.find(search.getKey())));
+      if (word.contains("#")) {
+        String hashtag = word.substring(1);
+
+        query.where(post.hashtagList.any().hashtag.id.eq(hashtag));
+      } else {
+        query.where(searchEnum(word, PostPageKeys.find(search.getKey())));
+      }
     }
 
     return paging(query, search);

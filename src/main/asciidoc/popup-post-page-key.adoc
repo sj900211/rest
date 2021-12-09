@@ -1,0 +1,5 @@
+ifndef::snippets[]
+:snippets: ../../../target/generated-snippets
+endif::[]
+
+include::{snippets}/common-controller-test/get-enum-list/popup/popup-fields-post-page-keys.adoc[]

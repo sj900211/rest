@@ -36,7 +36,7 @@ public class AuthRefreshUnitImpl implements AuthRefreshUnit {
 
   @Override
   public AuthRefresh get(String id) {
-    log.info("AuthRefreshUnit.getDetail");
+    log.info("AuthRefreshUnit.get");
 
     return repository.findById(id).orElseThrow(EntityNotFoundException::new);
   }

@@ -14,6 +14,7 @@ public class URIConfig {
   public static final String uriCommonHeartbeat = "/heartbeat"; // 서비스가 실행되었는지 체크하기 위한 URI
   public static final String uriCommonEnum = "/enum";
   public static final String uriCommonEnumPick = "/enum/{pick}";
+  public static final String uriCommonCrypto = "/crypto";
   public static final String uriCommonAttach = "/file";
   public static final String uriCommonAttachId = "/file/{id}";
   public static final String uriCommonAttachIdDownload = "/file/{id}/download";

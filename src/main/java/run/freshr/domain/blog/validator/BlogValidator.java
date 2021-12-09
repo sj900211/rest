@@ -48,18 +48,22 @@ public class BlogValidator {
       BindingResult bindingResult) {
     if (!isNull(hashtagList) && hashtagList.stream().anyMatch(item -> !(!isNull(item)
         && !isNull(item.getHashtag())
-        && !hasLength(item.getHashtag().getId())))) {
-      rejectRequired("hashtagList[].hashtag.id", bindingResult);
+        && hasLength(item.getHashtag().getId())))) {
+      rejectRequired("hashtagList[0].hashtag.id", bindingResult);
     }
   }
 
   private void checkGrant(Boolean managerGrant, Boolean leaderGrant, Boolean coachGrant,
       Boolean userGrant, Boolean anonymousGrant, BindingResult bindingResult) {
-    PostPermission permission = PostPermission.find(List.of(managerGrant, leaderGrant,
+    PostPermission permission = PostPermission.find(List.of(true, managerGrant, leaderGrant,
         coachGrant, userGrant, anonymousGrant));
 
     if (isNull(permission)) {
-      rejectWrong("grant", bindingResult);
+      rejectWrong("managerGrant", bindingResult);
+      rejectWrong("leaderGrant", bindingResult);
+      rejectWrong("coachGrant", bindingResult);
+      rejectWrong("userGrant", bindingResult);
+      rejectWrong("anonymousGrant", bindingResult);
     }
   }
 

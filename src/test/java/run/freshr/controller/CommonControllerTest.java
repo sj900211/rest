@@ -15,6 +15,7 @@ import static run.freshr.common.config.URIConfig.uriCommonAttach;
 import static run.freshr.common.config.URIConfig.uriCommonAttachExist;
 import static run.freshr.common.config.URIConfig.uriCommonAttachId;
 import static run.freshr.common.config.URIConfig.uriCommonAttachIdDownload;
+import static run.freshr.common.config.URIConfig.uriCommonCrypto;
 import static run.freshr.common.config.URIConfig.uriCommonEnum;
 import static run.freshr.common.config.URIConfig.uriCommonEnumPick;
 import static run.freshr.common.config.URIConfig.uriCommonHashtag;
@@ -29,6 +30,7 @@ import run.freshr.annotation.DocsClass;
 import run.freshr.annotation.DocsMethod;
 import run.freshr.common.extension.TestExtension;
 import run.freshr.domain.common.AttachDocs;
+import run.freshr.domain.common.CryptoDocs;
 import run.freshr.domain.common.EnumDocs;
 import run.freshr.domain.common.HashtagDocs;
 import run.freshr.domain.common.enumeration.Gender;
@@ -79,6 +81,27 @@ public class CommonControllerTest extends TestExtension {
         .andExpect(status().isOk());
   }
 
+  //  _______ .__   __.   ______ .______     ____    ____ .______   .___________.
+  // |   ____||  \ |  |  /      ||   _  \    \   \  /   / |   _  \  |           |
+  // |  |__   |   \|  | |  ,----'|  |_)  |    \   \/   /  |  |_)  | `---|  |----`
+  // |   __|  |  . `  | |  |     |      /      \_    _/   |   ___/      |  |
+  // |  |____ |  |\   | |  `----.|  |\  \----.   |  |     |  |          |  |
+  // |_______||__| \__|  \______|| _| `._____|   |__|     | _|          |__|
+
+  @Test
+  @DisplayName("RSA 공개키 조회")
+  @DocsMethod(displayName = "RSA 공개키 조회")
+  public void getPublicKey() throws Exception {
+    log.info("CommonControllerTest.getPublicKey");
+
+    setAnonymous();
+
+    GET(uriCommonCrypto)
+        .andDo(print())
+        .andDo(docs(responseFields(CryptoDocs.Response.getPublicKey())))
+        .andExpect(status().isOk());
+  }
+
   //      ___   .___________.___________.    ___       ______  __    __
   //     /   \  |           |           |   /   \     /      ||  |  |  |
   //    /  ^  \ `---|  |----`---|  |----`  /  ^  \   |  ,----'|  |__|  |
@@ -88,7 +111,8 @@ public class CommonControllerTest extends TestExtension {
 
   @Test
   @DisplayName("파일 업로드")
-  @DocsMethod(displayName = "파일 업로드", requestParts = true, requestParameters = true, responseFields = true)
+  @DocsMethod(displayName = "파일 업로드",
+      requestParts = true, requestParameters = true, responseFields = true)
   public void createAttach() throws Exception {
     log.info("CommonControllerTest.createAttach");
 
@@ -99,7 +123,8 @@ public class CommonControllerTest extends TestExtension {
     POST_MULTIPART(
         uriCommonAttach,
         "temp",
-        new MockMultipartFile("files", "test.png", "image/png", "EMOTION".getBytes())
+        new MockMultipartFile("files", "test.png", "image/png",
+            "EMOTION".getBytes())
     ).andDo(print())
         .andDo(docs(
             requestParts(AttachDocs.Request.createAttachFile()),

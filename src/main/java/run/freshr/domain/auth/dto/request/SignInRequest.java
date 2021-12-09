@@ -13,6 +13,9 @@ import lombok.NoArgsConstructor;
 public class SignInRequest {
 
   @NotEmpty
+  private String rsa;
+
+  @NotEmpty
   private String username;
 
   @NotEmpty

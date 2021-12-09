@@ -8,12 +8,17 @@ import static run.freshr.domain.auth.enumeration.Privilege.USER;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
+import run.freshr.domain.auth.entity.Account;
+import run.freshr.domain.blog.entity.Post;
+import run.freshr.domain.common.entity.Hashtag;
 import run.freshr.service.TestService;
 import run.freshr.util.StringUtil;
 
@@ -29,6 +34,7 @@ public class DataRunner implements ApplicationRunner {
   public static long userId; // 사용자 계정 일련 번호
   public static long attachId; // 파일 일련 번호
   public static List<String> hashtagList = new ArrayList<>(); // 해시태그 목록
+  public static List<Long> postList = new ArrayList<>(); // 포스팅 목록
 
   @Autowired
   private TestService testService;
@@ -74,7 +80,34 @@ public class DataRunner implements ApplicationRunner {
   }
 
   private void setBlog() {
-    //
+    Account superAccount = testService.getAccount(superId);
+    Account managerAccount = testService.getAccount(managerId);
+    Account leaderAccount = testService.getAccount(leaderId);
+    Account coachAccount = testService.getAccount(coachId);
+
+    for (int i = 0; i < 15; i++) {
+      String padding = StringUtil.padding(i, 3);
+
+      postList.add(testService.createPost(padding, superAccount));
+      postList.add(testService.createPost(padding, managerAccount));
+      postList.add(testService.createPost(padding, leaderAccount));
+      postList.add(testService.createPost(padding, coachAccount));
+    }
+
+    List<Hashtag> hashtags = hashtagList
+        .stream()
+        .map(pk -> testService.getHashtag(pk))
+        .collect(Collectors.toList());
+    AtomicInteger atomicInteger = new AtomicInteger();
+
+    postList.forEach(pk -> {
+      int i = atomicInteger.get();
+      Post post = testService.getPost(pk);
+
+      testService.createPostHashtagMapping(post, hashtags.get(i % 15));
+
+      atomicInteger.getAndIncrement();
+    });
   }
 
   private void setMapping() {

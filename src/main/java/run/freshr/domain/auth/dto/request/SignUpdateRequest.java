@@ -14,6 +14,9 @@ import run.freshr.domain.common.dto.request.IdRequest;
 public class SignUpdateRequest {
 
   @NotEmpty
+  private String rsa;
+
+  @NotEmpty
   private String name;
 
   private String introduce;

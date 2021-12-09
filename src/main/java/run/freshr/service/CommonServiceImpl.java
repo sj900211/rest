@@ -2,6 +2,7 @@ package run.freshr.service;
 
 import static java.util.Optional.ofNullable;
 import static run.freshr.common.util.RestUtil.buildId;
+import static run.freshr.common.util.RestUtil.checkProfile;
 import static run.freshr.common.util.RestUtil.error;
 import static run.freshr.common.util.RestUtil.getExceptions;
 import static run.freshr.common.util.RestUtil.getSignedAccount;
@@ -10,6 +11,10 @@ import static run.freshr.common.util.RestUtil.ok;
 import static run.freshr.util.MapperUtil.map;
 
 import java.io.IOException;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +23,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import run.freshr.common.util.RestUtil;
 import run.freshr.domain.common.dto.request.AttachCreateRequest;
 import run.freshr.domain.common.dto.request.IdRequest;
 import run.freshr.domain.common.dto.response.AttachResponse;
 import run.freshr.domain.common.dto.response.IdResponse;
 import run.freshr.domain.common.dto.response.IsResponse;
+import run.freshr.domain.common.dto.response.KeyResponse;
 import run.freshr.domain.common.entity.Attach;
 import run.freshr.domain.common.entity.Hashtag;
+import run.freshr.domain.common.redis.RsaPair;
 import run.freshr.domain.common.unit.AttachUnit;
 import run.freshr.domain.common.unit.HashtagUnit;
+import run.freshr.domain.common.unit.RsaPairUnit;
 import run.freshr.domain.mapping.unit.AccountHashtagMappingUnit;
 import run.freshr.domain.mapping.unit.PostHashtagMappingUnit;
 import run.freshr.response.PhysicalAttachResultResponse;
+import run.freshr.util.CryptoUtil;
 
 @Slf4j
 @Service
@@ -43,7 +51,30 @@ public class CommonServiceImpl implements CommonService {
   private final AccountHashtagMappingUnit accountHashtagMappingUnit;
   private final PostHashtagMappingUnit postHashtagMappingUnit;
 
+  private final RsaPairUnit rsaPairUnit;
+
   private final PhysicalAttachService physicalAttachService;
+
+  //   ______ .______     ____    ____ .______   .___________.  ______
+  //  /      ||   _  \    \   \  /   / |   _  \  |           | /  __  \
+  // |  ,----'|  |_)  |    \   \/   /  |  |_)  | `---|  |----`|  |  |  |
+  // |  |     |      /      \_    _/   |   ___/      |  |     |  |  |  |
+  // |  `----.|  |\  \----.   |  |     |  |          |  |     |  `--'  |
+  //  \______|| _| `._____|   |__|     | _|          |__|      \______/
+
+  @Override
+  @Transactional
+  public ResponseEntity<?> getPublicKey() {
+    KeyPair keyPar = CryptoUtil.getKeyPar();
+    PublicKey publicKey = keyPar.getPublic();
+    PrivateKey privateKey = keyPar.getPrivate();
+    String encodePublicKey = CryptoUtil.encodePublicKey(publicKey);
+    String encodePrivateKey = CryptoUtil.encodePrivateKey(privateKey);
+
+    rsaPairUnit.save(RsaPair.createRedis(encodePublicKey, encodePrivateKey, LocalDateTime.now()));
+
+    return ok(KeyResponse.<String>builder().key(encodePublicKey).build());
+  }
 
   //      ___   .___________.___________.    ___       ______  __    __
   //     /   \  |           |           |   /   \     /      ||  |  |  |
@@ -123,7 +154,7 @@ public class CommonServiceImpl implements CommonService {
   public ResponseEntity<?> getAttachDownload(Long id) throws IOException {
     log.info("CommonService.getAttachDownload");
 
-    if (RestUtil.checkProfile("test")) {
+    if (checkProfile("test")) {
       return ok();
     }
 
@@ -147,7 +178,11 @@ public class CommonServiceImpl implements CommonService {
   @Override
   @Transactional
   public ResponseEntity<?> createHashtag(IdRequest<String> dto) {
-    hashtagUnit.create(Hashtag.createEntity(dto.getId()));
+    String id = dto.getId();
+
+    if (!hashtagUnit.exists(id)) {
+      hashtagUnit.create(Hashtag.createEntity(id));
+    }
 
     return ok();
   }
@@ -165,12 +200,14 @@ public class CommonServiceImpl implements CommonService {
   @Override
   @Transactional
   public ResponseEntity<?> deleteHashtag(String id) {
-    Hashtag entity = hashtagUnit.get(id);
+    if (hashtagUnit.exists(id)) {
+      Hashtag entity = hashtagUnit.get(id);
 
-    accountHashtagMappingUnit.delete(entity);
-    postHashtagMappingUnit.delete(entity);
+      accountHashtagMappingUnit.delete(entity);
+      postHashtagMappingUnit.delete(entity);
 
-    hashtagUnit.delete(id);
+      hashtagUnit.delete(id);
+    }
 
     return ok();
   }

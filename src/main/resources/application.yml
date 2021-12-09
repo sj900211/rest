@@ -68,3 +68,7 @@ logging:
     org:
       hibernate:
         type: error
+
+freshr:
+  rsa:
+    limit: 300

@@ -13,11 +13,11 @@ import run.freshr.common.model.SearchEnumModel;
 @Slf4j
 public enum PostPageKeys implements SearchEnumModel {
 
+  ALL("전체", List.of(post.title, post.contents, post.creator.username, post.creator.name)),
   TITLE("제목", List.of(post.title)),
   CONTENTS("내용", List.of(post.contents)),
   USERNAME("작성자 아이디", List.of(post.creator.username)),
-  NAME("작성자 이름", List.of(post.creator.name)),
-  ALL("전체", List.of(post.title, post.contents, post.creator.username, post.creator.name));
+  NAME("작성자 이름", List.of(post.creator.name));
 
   private final String value;
   private final List<StringPath> paths;

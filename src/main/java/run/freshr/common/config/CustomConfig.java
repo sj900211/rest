@@ -14,6 +14,9 @@ public class CustomConfig {
   @Value("classpath:static/index.htm")
   private Resource heartbeat;
 
+  @Value("${freshr.rsa.limit}")
+  private Integer rsaLimit;
+
   @Value("${freshr.email.from}")
   private String emailFrom;
 

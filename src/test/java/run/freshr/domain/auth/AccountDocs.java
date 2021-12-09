@@ -21,10 +21,12 @@ public class AccountDocs {
       return PrintUtil
           .builder()
 
+          .field("rsa", "RSA 공개키", STRING)
+
           .prefixDescription("관리자")
 
-          .field(account.username, "고유 아이디 [BASE64 인코딩]")
-          .field(account.password, "비밀번호 [BASE64 인코딩]")
+          .field(account.username, "고유 아이디 [RSA 암호화]")
+          .field(account.password, "비밀번호 [RSA 암호화]")
 
           .build()
           .getFieldList();
@@ -36,8 +38,10 @@ public class AccountDocs {
       return PrintUtil
           .builder()
 
-          .field("originPassword", "원래 비밀번호 [BASE64 인코딩]", STRING)
-          .field(account.password, "변경 비밀번호 [BASE64 인코딩]")
+          .field("rsa", "RSA 공개키", STRING)
+
+          .field("originPassword", "원래 비밀번호 [RSA 암호화]", STRING)
+          .field(account.password, "변경 비밀번호 [RSA 암호화]")
 
           .build()
           .getFieldList();
@@ -49,7 +53,9 @@ public class AccountDocs {
       return PrintUtil
           .builder()
 
-          .field(account.name, "이름 [BASE64 인코딩]")
+          .field("rsa", "RSA 공개키", STRING)
+
+          .field(account.name, "이름 [RSA 암호화]")
 
           .prefixOptional()
 
@@ -109,6 +115,15 @@ public class AccountDocs {
   }
 
   public static class Docs {
+
+    public static List<FieldDescriptor> getAudit(String prefix) {
+      return PrintUtil
+          .builder()
+          .prefix(prefix)
+          .field(account.id, account.username, account.name)
+          .build()
+          .getFieldList();
+    }
 
   }
 
