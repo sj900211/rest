@@ -10,8 +10,16 @@ import static run.freshr.common.util.RestUtil.getSignedRole;
 import static run.freshr.common.util.RestUtil.ok;
 import static run.freshr.util.MapperUtil.map;
 
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.time.LocalDateTime;
@@ -37,7 +45,7 @@ import run.freshr.domain.common.unit.HashtagUnit;
 import run.freshr.domain.common.unit.RsaPairUnit;
 import run.freshr.domain.mapping.unit.AccountHashtagMappingUnit;
 import run.freshr.domain.mapping.unit.PostHashtagMappingUnit;
-import run.freshr.response.PhysicalAttachResultResponse;
+import run.freshr.response.PutResultResponse;
 import run.freshr.util.CryptoUtil;
 
 @Slf4j
@@ -53,7 +61,7 @@ public class CommonServiceImpl implements CommonService {
 
   private final RsaPairUnit rsaPairUnit;
 
-  private final PhysicalAttachService physicalAttachService;
+  private final MinioService minioService;
 
   //   ______ .______     ____    ____ .______   .___________.  ______
   //  /      ||   _  \    \   \  /   / |   _  \  |           | /  __  \
@@ -85,7 +93,10 @@ public class CommonServiceImpl implements CommonService {
 
   @Override
   @Transactional
-  public ResponseEntity<?> createAttach(AttachCreateRequest dto) throws IOException {
+  public ResponseEntity<?> createAttach(AttachCreateRequest dto)
+      throws IOException, ServerException, InsufficientDataException, ErrorResponseException,
+      NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException,
+      InternalException {
     log.info("CommonService.createAttach");
 
     List<MultipartFile> files = dto.getFiles();
@@ -96,7 +107,7 @@ public class CommonServiceImpl implements CommonService {
       String contentType = ofNullable(file.getContentType()).orElse("");
       String filename = ofNullable(file.getOriginalFilename()).orElse("");
 
-      PhysicalAttachResultResponse uploadResult = physicalAttachService.upload(directory, file);
+      PutResultResponse uploadResult = minioService.upload(directory, file);
 
       Long id = attachUnit.create(
           Attach.createEntity(
@@ -151,7 +162,10 @@ public class CommonServiceImpl implements CommonService {
   }
 
   @Override
-  public ResponseEntity<?> getAttachDownload(Long id) throws IOException {
+  public ResponseEntity<?> getAttachDownload(Long id)
+      throws IOException, ServerException, InsufficientDataException, ErrorResponseException,
+      NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException,
+      InternalException {
     log.info("CommonService.getAttachDownload");
 
     if (checkProfile("test")) {
@@ -160,7 +174,7 @@ public class CommonServiceImpl implements CommonService {
 
     Attach entity = attachUnit.get(id);
 
-    return physicalAttachService.download(entity.getFilename(), entity.getPath());
+    return minioService.download(entity.getFilename(), entity.getPath());
   }
 
   //  __    __       ___           _______. __    __  .___________.    ___       _______

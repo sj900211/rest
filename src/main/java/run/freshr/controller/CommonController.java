@@ -23,7 +23,15 @@ import static run.freshr.domain.auth.enumeration.Role.Secured.MANAGER;
 import static run.freshr.domain.auth.enumeration.Role.Secured.SUPER;
 import static run.freshr.domain.auth.enumeration.Role.Secured.USER;
 
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -104,7 +112,9 @@ public class CommonController {
   @Secured({SUPER, MANAGER, LEADER, COACH, USER})
   @PostMapping(value = uriCommonAttach, consumes = MULTIPART_FORM_DATA_VALUE)
   public ResponseEntity<?> createAttach(@ModelAttribute @Valid AttachCreateRequest dto)
-      throws IOException {
+      throws IOException, ServerException, InsufficientDataException, ErrorResponseException,
+      NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException,
+      InternalException {
     log.info("CommonController.createAttach");
 
     return service.createAttach(dto);
@@ -136,7 +146,10 @@ public class CommonController {
 
   @Secured({SUPER, MANAGER, LEADER, COACH, USER, ANONYMOUS})
   @GetMapping(uriCommonAttachIdDownload)
-  public ResponseEntity<?> getAttachDownload(@PathVariable Long id) throws IOException {
+  public ResponseEntity<?> getAttachDownload(@PathVariable Long id)
+      throws IOException, ServerException, InsufficientDataException, ErrorResponseException,
+      NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException,
+      InternalException {
     log.info("CommonController.getAttachDownload");
 
     return service.getAttachDownload(id);

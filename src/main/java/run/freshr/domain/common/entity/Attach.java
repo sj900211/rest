@@ -1,11 +1,18 @@
 package run.freshr.domain.common.entity;
 
 import static lombok.AccessLevel.PROTECTED;
-import static run.freshr.common.util.RestUtil.checkProfile;
 import static run.freshr.util.BeanUtil.getBean;
 
-import java.net.MalformedURLException;
+import io.minio.errors.ErrorResponseException;
+import io.minio.errors.InsufficientDataException;
+import io.minio.errors.InternalException;
+import io.minio.errors.InvalidResponseException;
+import io.minio.errors.ServerException;
+import io.minio.errors.XmlParserException;
+import java.io.IOException;
 import java.net.URL;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -19,7 +26,7 @@ import run.freshr.annotation.ColumnComment;
 import run.freshr.annotation.TableComment;
 import run.freshr.common.extension.EntityAuditPhysicalExtension;
 import run.freshr.domain.auth.entity.Account;
-import run.freshr.service.PhysicalAttachService;
+import run.freshr.service.MinioService;
 
 @Slf4j
 @Entity
@@ -75,16 +82,15 @@ public class Attach extends EntityAuditPhysicalExtension {
     return new Attach(contentType, filename, path, size, alt, title, creator);
   }
 
-  public URL getUrl() throws MalformedURLException {
+  public URL getUrl()
+      throws IOException, ServerException, InsufficientDataException, ErrorResponseException,
+      NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException,
+      InternalException {
     log.info("Attach.getUrl");
 
-    if (checkProfile("test")) {
-      return new URL("http://localhost:8900/" + this.path);
-    }
+    MinioService service = getBean(MinioService.class);
 
-    PhysicalAttachService service = getBean(PhysicalAttachService.class);
-
-    return service.getResourceUrl(this.path);
+    return service.getUrl(this.path);
   }
 
 }

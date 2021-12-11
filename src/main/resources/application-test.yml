@@ -94,11 +94,5 @@ freshr:
   exceptions:
     success-message: 처리되었습니다.
 
-  attach:
-    root: upload
-    domain: http://localhost:8900
-    except:
-      - test
-
   email:
     from: XXX@XXX.XXX

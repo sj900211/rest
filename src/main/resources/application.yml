@@ -70,5 +70,14 @@ logging:
         type: error
 
 freshr:
+  minio:
+    bucket: blog
+    access: blog
+    secret: dltkdgoTl#001
+    domain: https://minio-api.freshr.run
+    path: upload
+    except:
+      - test
+
   rsa:
     limit: 300
