@@ -2,20 +2,23 @@ package run.freshr.common.extension;
 
 import static javax.persistence.GenerationType.IDENTITY;
 import static run.freshr.common.config.DefaultColumnConfig.FALSE;
-import static run.freshr.common.config.DefaultColumnConfig.INSERT_TIMESTAMP;
 import static run.freshr.common.config.DefaultColumnConfig.TRUE;
-import static run.freshr.common.config.DefaultColumnConfig.UPDATE_TIMESTAMP;
 
 import java.time.LocalDateTime;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import run.freshr.annotation.ColumnComment;
 
 @Getter
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
 public class EntityLogicalExtension {
 
   @Id
@@ -31,11 +34,11 @@ public class EntityLogicalExtension {
   @ColumnComment("삭제 여부")
   protected Boolean delFlag;
 
-  @ColumnDefault(INSERT_TIMESTAMP)
+  @CreatedDate
   @ColumnComment("등록 날짜")
   protected LocalDateTime createDt;
 
-  @ColumnDefault(UPDATE_TIMESTAMP)
+  @LastModifiedDate
   @ColumnComment("마지막 수정 날짜")
   protected LocalDateTime updateDt;
 

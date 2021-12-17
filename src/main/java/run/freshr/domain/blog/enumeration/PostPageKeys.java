@@ -37,6 +37,10 @@ public enum PostPageKeys implements SearchEnumModel {
     return value;
   }
 
+  public List<StringPath> getPaths() {
+    return paths;
+  }
+
   @Override
   public BooleanBuilder search(String word) {
     return searchKeyword(word, paths);

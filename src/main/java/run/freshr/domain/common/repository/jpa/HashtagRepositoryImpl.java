@@ -1,4 +1,4 @@
-package run.freshr.domain.common.repository;
+package run.freshr.domain.common.repository.jpa;
 
 import static run.freshr.domain.blog.entity.QPost.post;
 import static run.freshr.domain.blog.functional.BlogFunctional.checkPermission;

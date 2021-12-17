@@ -1,4 +1,4 @@
-package run.freshr.domain.common.repository;
+package run.freshr.domain.common.repository.redis;
 
 import org.springframework.data.repository.CrudRepository;
 import run.freshr.domain.common.redis.RsaPair;

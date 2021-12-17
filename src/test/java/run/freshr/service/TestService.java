@@ -15,15 +15,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import run.freshr.common.security.SecurityUtil;
+import run.freshr.domain.auth.document.AuditDocument;
 import run.freshr.domain.auth.entity.Account;
 import run.freshr.domain.auth.enumeration.Privilege;
 import run.freshr.domain.auth.enumeration.Role;
-import run.freshr.domain.auth.redis.AuthAccess;
-import run.freshr.domain.auth.redis.AuthRefresh;
+import run.freshr.domain.auth.redis.AccessRedis;
+import run.freshr.domain.auth.redis.RefreshRedis;
 import run.freshr.domain.auth.unit.AccountUnitImpl;
-import run.freshr.domain.auth.unit.AuthAccessUnitImpl;
-import run.freshr.domain.auth.unit.AuthRefreshUnitImpl;
+import run.freshr.domain.auth.unit.AccessRedisUnitImpl;
+import run.freshr.domain.auth.unit.RefreshRedisUnitImpl;
+import run.freshr.domain.blog.elasticsearch.PostSearch;
 import run.freshr.domain.blog.entity.Post;
+import run.freshr.domain.blog.unit.PostSearchUnit;
 import run.freshr.domain.blog.unit.PostUnit;
 import run.freshr.domain.common.entity.Attach;
 import run.freshr.domain.common.entity.Hashtag;
@@ -31,6 +34,7 @@ import run.freshr.domain.common.redis.RsaPair;
 import run.freshr.domain.common.unit.AttachUnitImpl;
 import run.freshr.domain.common.unit.HashtagUnit;
 import run.freshr.domain.common.unit.RsaPairUnit;
+import run.freshr.domain.mapping.document.PostHashtagMappingForPostDocument;
 import run.freshr.domain.mapping.entity.AccountHashtagMapping;
 import run.freshr.domain.mapping.entity.PostHashtagMapping;
 import run.freshr.domain.mapping.unit.AccountHashtagMappingUnit;
@@ -63,8 +67,8 @@ public class TestService {
   //   /  /_\  \  |  |  |  |     |  |     |   __   |
   //  /  _____  \ |  `--'  |     |  |     |  |  |  |
   // /__/     \__\ \______/      |__|     |__|  |__|
-  private final AuthAccessUnitImpl authAccessUnit;
-  private final AuthRefreshUnitImpl authRefreshUnit;
+  private final AccessRedisUnitImpl authAccessUnit;
+  private final RefreshRedisUnitImpl authRefreshUnit;
 
   public void createAuth(Long id, Role role) {
     threadAccess.remove();
@@ -78,20 +82,20 @@ public class TestService {
     threadRefresh.set(refreshToken);
 
     // 토큰 등록
-    authAccessUnit.save(AuthAccess.createRedis(accessToken, id, role));
-    authRefreshUnit.save(AuthRefresh.createRedis(refreshToken, authAccessUnit.get(accessToken)));
+    authAccessUnit.save(AccessRedis.createRedis(accessToken, id, role));
+    authRefreshUnit.save(RefreshRedis.createRedis(refreshToken, authAccessUnit.get(accessToken)));
   }
 
   public void createAccess(String accessToken, Long id, Role role) {
-    authAccessUnit.save(AuthAccess.createRedis(accessToken, id, role));
+    authAccessUnit.save(AccessRedis.createRedis(accessToken, id, role));
   }
 
-  public AuthAccess getAccess(String id) {
+  public AccessRedis getAccess(String id) {
     return authAccessUnit.get(id);
   }
 
   public void createRefresh(String refreshToken, String access) {
-    authRefreshUnit.save(AuthRefresh.createRedis(refreshToken, getAccess(access)));
+    authRefreshUnit.save(RefreshRedis.createRedis(refreshToken, getAccess(access)));
   }
 
   //      ___       ______   ______   ______    __    __  .__   __. .___________.
@@ -178,6 +182,7 @@ public class TestService {
   // |  |      |  `--'  | .----)   |      |  |
   // | _|       \______/  |_______/       |__|
   private final PostUnit postUnit;
+  private final PostSearchUnit postSearchUnit;
 
   public long createPost(String padding, Account creator) {
     String contents = "# CONTENTS " + padding + "\r\n"
@@ -193,6 +198,14 @@ public class TestService {
 
   public Post getPost(long id) {
     return postUnit.get(id);
+  }
+
+  public void savePostSearch(String title, Long id, Account creator,
+      List<PostHashtagMappingForPostDocument> hashtagList) {
+    postSearchUnit.save(PostSearch.createDocument(id, title,
+        true, true, true, true, true,
+        AuditDocument.createDocument(creator.getId(), creator.getUsername(), creator.getName()),
+        hashtagList));
   }
 
   //      ___       ______   ______   ______    __    __  .__   __. .___________.

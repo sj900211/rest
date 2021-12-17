@@ -10,7 +10,7 @@ import run.freshr.domain.blog.entity.Post;
 import run.freshr.domain.common.entity.Hashtag;
 import run.freshr.domain.mapping.embedded.PostHashtagMappingEmbeddedId;
 import run.freshr.domain.mapping.entity.PostHashtagMapping;
-import run.freshr.domain.mapping.repository.PostHashtagMappingRepository;
+import run.freshr.domain.mapping.repository.jpa.PostHashtagMappingRepository;
 
 @Slf4j
 @Unit

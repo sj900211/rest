@@ -39,11 +39,11 @@ import run.freshr.domain.common.enumeration.Gender;
 @DocsClass(name = "common", description = "공통 관리")
 public class CommonControllerTest extends TestExtension {
 
-//  @Test
-//  @DisplayName("개발 DB 더미 데이터 생성")
-//  public void dummy() {
-//    log.info("CommonControllerTest.dummy");
-//  }
+  @Test
+  @DisplayName("개발 DB 더미 데이터 생성")
+  public void dummy() {
+    log.info("CommonControllerTest.dummy");
+  }
 
   //  _______ .__   __.  __    __  .___  ___.
   // |   ____||  \ |  | |  |  |  | |   \/   |

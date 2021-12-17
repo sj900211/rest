@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import run.freshr.annotation.Unit;
 import run.freshr.domain.common.redis.RsaPair;
-import run.freshr.domain.common.repository.RsaPairRepository;
+import run.freshr.domain.common.repository.redis.RsaPairRepository;
 
 @Slf4j
 @Unit

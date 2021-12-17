@@ -2,7 +2,6 @@ package run.freshr.common.security;
 
 import static com.google.common.base.CaseFormat.LOWER_HYPHEN;
 import static com.google.common.base.CaseFormat.UPPER_CAMEL;
-import static java.util.Optional.of;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.OK;
@@ -31,19 +30,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import run.freshr.common.model.ResponseModel;
 import run.freshr.domain.auth.enumeration.Role;
-import run.freshr.domain.auth.redis.AuthAccess;
-import run.freshr.domain.auth.unit.AuthAccessUnitImpl;
+import run.freshr.domain.auth.redis.AccessRedis;
+import run.freshr.domain.auth.unit.AccessRedisUnitImpl;
 
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityFilter extends OncePerRequestFilter {
 
-  private final AuthAccessUnitImpl authAccessUnit;
+  private final AccessRedisUnitImpl authAccessUnit;
 
   private final ObjectMapper objectMapper;
 
   public SecurityFilter() {
-    this.authAccessUnit = getBean(AuthAccessUnitImpl.class);
+    this.authAccessUnit = getBean(AccessRedisUnitImpl.class);
     this.objectMapper = getBean(ObjectMapper.class);
   }
 
@@ -55,7 +54,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     try {
       // Request Header Authorization 값 조회
       String header = request.getHeader(AUTHORIZATION_STRING);
-      String jwt = of(header).orElse(null); // Bearer 토큰 조회
+      String jwt = hasLength(header) ? header : null; // Bearer 토큰 조회
       Long id = 0L; // 게스트 권한으로 설정
       Role role = ROLE_ANONYMOUS; // 게스트 권한으로 설정
 
@@ -70,7 +69,7 @@ public class SecurityFilter extends OncePerRequestFilter {
           throw new ExpiredJwtException(null, null, "error validate token");
         }
 
-        AuthAccess access = authAccessUnit.get(accessToken); // 데이터 조회
+        AccessRedis access = authAccessUnit.get(accessToken); // 데이터 조회
 
         id = access.getSignId(); // 일련 번호 조회
         role = access.getRole(); // 권한 조회

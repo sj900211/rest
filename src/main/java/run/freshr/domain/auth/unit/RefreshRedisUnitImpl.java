@@ -7,36 +7,36 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import run.freshr.annotation.Unit;
-import run.freshr.domain.auth.redis.AuthAccess;
-import run.freshr.domain.auth.redis.AuthRefresh;
-import run.freshr.domain.auth.repository.AuthRefreshRepository;
+import run.freshr.domain.auth.redis.AccessRedis;
+import run.freshr.domain.auth.redis.RefreshRedis;
+import run.freshr.domain.auth.repository.redis.RefreshRedisRepository;
 
 @Slf4j
 @Unit
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class AuthRefreshUnitImpl implements AuthRefreshUnit {
+public class RefreshRedisUnitImpl implements RefreshRedisUnit {
 
-  private final AuthRefreshRepository repository;
+  private final RefreshRedisRepository repository;
 
   @Override
   @Transactional
-  public void save(AuthRefresh redis) {
-    log.info("AuthRefreshUnit.save");
+  public void save(RefreshRedis redis) {
+    log.info("RefreshRedisUnit.save");
 
     repository.save(redis);
   }
 
   @Override
   public Boolean exists(String id) {
-    log.info("AuthRefreshUnit.exists");
+    log.info("RefreshRedisUnit.exists");
 
     return repository.existsById(id);
   }
 
   @Override
-  public AuthRefresh get(String id) {
-    log.info("AuthRefreshUnit.get");
+  public RefreshRedis get(String id) {
+    log.info("RefreshRedisUnit.get");
 
     return repository.findById(id).orElseThrow(EntityNotFoundException::new);
   }
@@ -44,17 +44,17 @@ public class AuthRefreshUnitImpl implements AuthRefreshUnit {
   @Override
   @Transactional
   public void delete(String id) {
-    log.info("AuthRefreshUnit.delete");
+    log.info("RefreshRedisUnit.delete");
 
     repository.deleteById(id);
   }
 
   @Override
   @Transactional
-  public void delete(AuthAccess access) {
-    log.info("AuthRefreshUnit.delete");
+  public void delete(AccessRedis access) {
+    log.info("RefreshRedisUnit.delete");
 
-    Iterable<AuthRefresh> refreshIterable = repository.findAll();
+    Iterable<RefreshRedis> refreshIterable = repository.findAll();
 
     refreshIterable.forEach(refresh -> {
       if (!isNull(refresh) && !isNull(refresh.getAccess())

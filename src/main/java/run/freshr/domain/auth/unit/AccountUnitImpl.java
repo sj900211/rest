@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import run.freshr.annotation.Unit;
 import run.freshr.domain.auth.entity.Account;
-import run.freshr.domain.auth.repository.AccountRepository;
+import run.freshr.domain.auth.repository.jpa.AccountRepository;
 
 @Slf4j
 @Unit

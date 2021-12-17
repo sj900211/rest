@@ -4,14 +4,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Component
 public class AppRunner implements ApplicationRunner {
 
   @Override
-  @Transactional
   public void run(ApplicationArguments args) {
     log.info("-------------------------------------------------------------------");
     log.info("_______ .______       _______     _______. __    __  .______");

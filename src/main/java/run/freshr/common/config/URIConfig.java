@@ -28,8 +28,8 @@ public class URIConfig {
   public static final String uriAuthPassword = "/auth/password";
   public static final String uriAuthInfo = "/auth/info";
 
-  public static final String uriBlog = "/blog";
   public static final String uriBlogPost = "/blog/post";
   public static final String uriBlogPostId = "/blog/post/{id}";
+  public static final String uriBlogPostIdHit = "/blog/post/{id}/hit";
 
 }

@@ -1,4 +1,4 @@
-package run.freshr.domain.mapping.repository;
+package run.freshr.domain.mapping.repository.jpa;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;

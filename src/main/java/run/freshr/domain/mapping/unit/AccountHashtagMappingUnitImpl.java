@@ -10,7 +10,7 @@ import run.freshr.domain.auth.entity.Account;
 import run.freshr.domain.common.entity.Hashtag;
 import run.freshr.domain.mapping.embedded.AccountHashtagMappingEmbeddedId;
 import run.freshr.domain.mapping.entity.AccountHashtagMapping;
-import run.freshr.domain.mapping.repository.AccountHashtagMappingRepository;
+import run.freshr.domain.mapping.repository.jpa.AccountHashtagMappingRepository;
 
 @Slf4j
 @Unit

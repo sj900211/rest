@@ -1,4 +1,4 @@
-package run.freshr.domain.common.repository;
+package run.freshr.domain.common.repository.jpa;
 
 import java.util.List;
 import run.freshr.domain.auth.enumeration.Role;

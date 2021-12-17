@@ -8,7 +8,6 @@ import static run.freshr.domain.auth.enumeration.Privilege.USER;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,9 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import run.freshr.domain.auth.entity.Account;
 import run.freshr.domain.blog.entity.Post;
+import run.freshr.domain.common.document.IdDocument;
 import run.freshr.domain.common.entity.Hashtag;
+import run.freshr.domain.mapping.document.PostHashtagMappingForPostDocument;
 import run.freshr.service.TestService;
 import run.freshr.util.StringUtil;
 
@@ -84,30 +85,46 @@ public class DataRunner implements ApplicationRunner {
     Account managerAccount = testService.getAccount(managerId);
     Account leaderAccount = testService.getAccount(leaderId);
     Account coachAccount = testService.getAccount(coachId);
-
-    for (int i = 0; i < 15; i++) {
-      String padding = StringUtil.padding(i, 3);
-
-      postList.add(testService.createPost(padding, superAccount));
-      postList.add(testService.createPost(padding, managerAccount));
-      postList.add(testService.createPost(padding, leaderAccount));
-      postList.add(testService.createPost(padding, coachAccount));
-    }
-
     List<Hashtag> hashtags = hashtagList
         .stream()
         .map(pk -> testService.getHashtag(pk))
         .collect(Collectors.toList());
-    AtomicInteger atomicInteger = new AtomicInteger();
 
-    postList.forEach(pk -> {
-      int i = atomicInteger.get();
-      Post post = testService.getPost(pk);
+    for (int i = 0; i < 15; i++) {
+      String padding = StringUtil.padding(i, 3);
+      long superId = testService.createPost(padding, superAccount);
+      long managerId = testService.createPost(padding, managerAccount);
+      long leaderId = testService.createPost(padding, leaderAccount);
+      long coachId = testService.createPost(padding, coachAccount);
+      Post superPost = testService.getPost(superId);
+      Post managerPost = testService.getPost(managerId);
+      Post leaderPost = testService.getPost(leaderId);
+      Post coachPost = testService.getPost(coachId);
+      Hashtag hashtag = hashtags.get(i);
 
-      testService.createPostHashtagMapping(post, hashtags.get(i % 15));
+      testService.createPostHashtagMapping(superPost, hashtag);
+      testService.createPostHashtagMapping(managerPost, hashtag);
+      testService.createPostHashtagMapping(leaderPost, hashtag);
+      testService.createPostHashtagMapping(coachPost, hashtag);
 
-      atomicInteger.getAndIncrement();
-    });
+      testService.savePostSearch(superPost.getTitle(), superPost.getId(), superAccount,
+          List.of(PostHashtagMappingForPostDocument
+              .createDocument(IdDocument.createDocument(hashtag.getId()))));
+      testService.savePostSearch(managerPost.getTitle(), managerPost.getId(), managerAccount,
+          List.of(PostHashtagMappingForPostDocument
+              .createDocument(IdDocument.createDocument(hashtag.getId()))));
+      testService.savePostSearch(leaderPost.getTitle(), leaderPost.getId(), leaderAccount,
+          List.of(PostHashtagMappingForPostDocument
+              .createDocument(IdDocument.createDocument(hashtag.getId()))));
+      testService.savePostSearch(coachPost.getTitle(), coachPost.getId(), coachAccount,
+          List.of(PostHashtagMappingForPostDocument
+              .createDocument(IdDocument.createDocument(hashtag.getId()))));
+
+      postList.add(superId);
+      postList.add(managerId);
+      postList.add(leaderId);
+      postList.add(coachId);
+    }
   }
 
   private void setMapping() {

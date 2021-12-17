@@ -1,4 +1,4 @@
-package run.freshr.domain.blog.repository;
+package run.freshr.domain.blog.repository.jpa;
 
 import static org.springframework.util.StringUtils.hasLength;
 import static run.freshr.common.functional.GlobalFunctional.paging;

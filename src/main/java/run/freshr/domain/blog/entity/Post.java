@@ -4,19 +4,17 @@ import static java.lang.Byte.parseByte;
 import static java.lang.Integer.toBinaryString;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.InheritanceType.JOINED;
 import static lombok.AccessLevel.PROTECTED;
 import static run.freshr.common.config.DefaultColumnConfig.ZERO;
 
 import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.Index;
-import javax.persistence.Inheritance;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -37,12 +35,14 @@ import run.freshr.domain.mapping.entity.PostHashtagMapping;
     name = "TB_BLOG_POST",
     indexes = {@Index(name = "IDX_BLOG_POST_FLAG", columnList = "useFlag, delFlag")}
 )
+@SequenceGenerator(
+    name="SEQUENCE_GENERATOR",
+    sequenceName="SEQ_BLOG_POST"
+)
 @TableComment(value = "블로그 관리 > 포스팅 관리", extend = "EntityAuditLogicalExtension")
 @Getter
 @DynamicInsert
 @DynamicUpdate
-@Inheritance(strategy = JOINED)
-@DiscriminatorColumn
 @NoArgsConstructor(access = PROTECTED)
 public class Post extends EntityAuditLogicalExtension {
 

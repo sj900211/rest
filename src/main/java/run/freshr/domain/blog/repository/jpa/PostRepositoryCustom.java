@@ -1,4 +1,4 @@
-package run.freshr.domain.blog.repository;
+package run.freshr.domain.blog.repository.jpa;
 
 import org.springframework.data.domain.Page;
 import run.freshr.domain.auth.enumeration.Role;

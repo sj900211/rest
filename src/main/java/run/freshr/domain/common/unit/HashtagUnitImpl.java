@@ -9,7 +9,7 @@ import run.freshr.annotation.Unit;
 import run.freshr.domain.auth.enumeration.Role;
 import run.freshr.domain.common.dto.response.HashtagListResponse;
 import run.freshr.domain.common.entity.Hashtag;
-import run.freshr.domain.common.repository.HashtagRepository;
+import run.freshr.domain.common.repository.jpa.HashtagRepository;
 
 @Slf4j
 @Unit

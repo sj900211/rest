@@ -13,6 +13,8 @@ public interface BlogService {
 
   ResponseEntity<?> updatePost(Long id, PostUpdateRequest dto);
 
+  ResponseEntity<?> addPostHit(Long id);
+
   ResponseEntity<?> removePost(Long id);
 
   ResponseEntity<?> getPostPage(BlogSearch search);

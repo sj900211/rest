@@ -5,7 +5,6 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.isNull;
 import static javax.persistence.EnumType.STRING;
 import static javax.persistence.FetchType.LAZY;
-import static javax.persistence.InheritanceType.JOINED;
 import static lombok.AccessLevel.PROTECTED;
 import static org.springframework.util.StringUtils.hasLength;
 import static run.freshr.domain.auth.enumeration.Privilege.USER;
@@ -13,15 +12,14 @@ import static run.freshr.domain.auth.enumeration.Privilege.USER;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.ForeignKey;
 import javax.persistence.Index;
-import javax.persistence.Inheritance;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import lombok.Getter;
@@ -39,19 +37,21 @@ import run.freshr.domain.mapping.entity.AccountHashtagMapping;
 @Slf4j
 @Entity
 @Table(
-    name = "TB_AUTH_SIGN",
-    uniqueConstraints = @UniqueConstraint(name = "UK_SIGN_USERNAME", columnNames = {"username"}),
+    name = "TB_AUTH_ACCOUNT",
+    uniqueConstraints = @UniqueConstraint(name = "UK_ACCOUNT_USERNAME", columnNames = {"username"}),
     indexes = {
-        @Index(name = "IDX_AUTH_SIGN_PRIVILEGE", columnList = "privilege"),
-        @Index(name = "IDX_AUTH_SIGN_FLAG", columnList = "useFlag, delFlag")
+        @Index(name = "IDX_AUTH_ACCOUNT_PRIVILEGE", columnList = "privilege"),
+        @Index(name = "IDX_AUTH_ACCOUNT_FLAG", columnList = "useFlag, delFlag")
     }
+)
+@SequenceGenerator(
+    name="SEQUENCE_GENERATOR",
+    sequenceName="SEQ_AUTH_ACCOUNT"
 )
 @TableComment(value = "권한 관리 > 계정 관리", extend = "EntityLogicalExtension")
 @Getter
 @DynamicInsert
 @DynamicUpdate
-@Inheritance(strategy = JOINED)
-@DiscriminatorColumn
 @NoArgsConstructor(access = PROTECTED)
 public class Account extends EntityLogicalExtension {
 

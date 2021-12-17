@@ -15,6 +15,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.Getter;
@@ -31,6 +32,10 @@ import run.freshr.service.MinioService;
 @Slf4j
 @Entity
 @Table(name = "TB_COM_ATTACH")
+@SequenceGenerator(
+    name="SEQUENCE_GENERATOR",
+    sequenceName="SEQ_COM_ATTACH"
+)
 @TableComment(value = "공통 관리 > 첨부파일 관리", extend = "EntityAuditPhysicalExtension")
 @Getter
 @DynamicInsert

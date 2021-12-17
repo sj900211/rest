@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import run.freshr.annotation.Unit;
 import run.freshr.domain.auth.enumeration.Role;
 import run.freshr.domain.blog.entity.Post;
-import run.freshr.domain.blog.repository.PostRepository;
+import run.freshr.domain.blog.repository.jpa.PostRepository;
 import run.freshr.domain.blog.vo.BlogSearch;
 
 @Slf4j

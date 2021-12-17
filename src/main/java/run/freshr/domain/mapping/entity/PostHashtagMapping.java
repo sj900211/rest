@@ -2,11 +2,11 @@ package run.freshr.domain.mapping.entity;
 
 import static javax.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
-import static run.freshr.common.config.DefaultColumnConfig.INSERT_TIMESTAMP;
 
 import java.time.LocalDateTime;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.ForeignKey;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,9 +15,10 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import run.freshr.annotation.ColumnComment;
 import run.freshr.annotation.TableComment;
 import run.freshr.domain.blog.entity.Post;
@@ -32,12 +33,13 @@ import run.freshr.domain.mapping.embedded.PostHashtagMappingEmbeddedId;
 @DynamicInsert
 @DynamicUpdate
 @NoArgsConstructor(access = PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class PostHashtagMapping {
 
   @EmbeddedId
   private PostHashtagMappingEmbeddedId id;
 
-  @ColumnDefault(INSERT_TIMESTAMP)
+  @CreatedDate
   @ColumnComment("등록 날짜")
   private LocalDateTime createDt;
 

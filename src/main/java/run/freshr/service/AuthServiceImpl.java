@@ -30,11 +30,11 @@ import run.freshr.domain.auth.dto.response.RefreshTokenResponse;
 import run.freshr.domain.auth.dto.response.SignInResponse;
 import run.freshr.domain.auth.entity.Account;
 import run.freshr.domain.auth.enumeration.Role;
-import run.freshr.domain.auth.redis.AuthAccess;
-import run.freshr.domain.auth.redis.AuthRefresh;
+import run.freshr.domain.auth.redis.AccessRedis;
+import run.freshr.domain.auth.redis.RefreshRedis;
 import run.freshr.domain.auth.unit.AccountUnitImpl;
-import run.freshr.domain.auth.unit.AuthAccessUnitImpl;
-import run.freshr.domain.auth.unit.AuthRefreshUnitImpl;
+import run.freshr.domain.auth.unit.AccessRedisUnitImpl;
+import run.freshr.domain.auth.unit.RefreshRedisUnitImpl;
 import run.freshr.domain.common.redis.RsaPair;
 import run.freshr.domain.common.unit.AttachUnitImpl;
 import run.freshr.domain.common.unit.RsaPairUnit;
@@ -48,8 +48,8 @@ public class AuthServiceImpl implements AuthService {
   private final AccountUnitImpl accountUnit;
   private final AttachUnitImpl attachUnit;
 
-  private final AuthAccessUnitImpl authAccessUnit;
-  private final AuthRefreshUnitImpl authRefreshUnit;
+  private final AccessRedisUnitImpl authAccessUnit;
+  private final RefreshRedisUnitImpl authRefreshUnit;
   private final RsaPairUnit rsaPairUnit;
 
   private final PasswordEncoder passwordEncoder;
@@ -97,8 +97,8 @@ public class AuthServiceImpl implements AuthService {
     String refreshToken = SecurityUtil.createRefreshToken(id);
 
     // 토큰 등록
-    authAccessUnit.save(AuthAccess.createRedis(accessToken, id, entity.getPrivilege().getRole()));
-    authRefreshUnit.save(AuthRefresh.createRedis(refreshToken, authAccessUnit.get(accessToken)));
+    authAccessUnit.save(AccessRedis.createRedis(accessToken, id, entity.getPrivilege().getRole()));
+    authRefreshUnit.save(RefreshRedis.createRedis(refreshToken, authAccessUnit.get(accessToken)));
 
     SignInResponse response = SignInResponse.builder()
         .accessToken(accessToken)
@@ -171,9 +171,9 @@ public class AuthServiceImpl implements AuthService {
       return error(getExceptions().getUnAuthenticated());
     }
 
-    AuthRefresh refresh = authRefreshUnit.get(refreshToken); // Refresh Token 상세 조회
+    RefreshRedis refresh = authRefreshUnit.get(refreshToken); // Refresh Token 상세 조회
     LocalDateTime updateDt = refresh.getUpdateDt(); // Access Token 갱신 날짜 시간 조회
-    AuthAccess access = authAccessUnit.get(refresh.getAccess().getId()); // Access Token 상세 조회
+    AccessRedis access = authAccessUnit.get(refresh.getAccess().getId()); // Access Token 상세 조회
     String accessToken = access.getId(); // Access Token 조회
     Long id = access.getSignId(); // 계정 일련 번호 조회
     Role role = access.getRole(); // 계정 권한 조회
@@ -192,7 +192,7 @@ public class AuthServiceImpl implements AuthService {
     String newAccessToken = SecurityUtil.createAccessToken(id);
 
     authAccessUnit.delete(accessToken);
-    authAccessUnit.save(AuthAccess.createRedis(newAccessToken, id, role));
+    authAccessUnit.save(AccessRedis.createRedis(newAccessToken, id, role));
 
     refresh.updateRedis(authAccessUnit.get(newAccessToken));
     authRefreshUnit.save(refresh);

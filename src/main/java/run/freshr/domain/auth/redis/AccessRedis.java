@@ -9,7 +9,7 @@ import run.freshr.domain.auth.enumeration.Role;
 @Slf4j
 @RedisHash("CACHE_ACCESS_TOKEN")
 @Getter
-public class AuthAccess {
+public class AccessRedis {
 
   @Id
   private final String id;
@@ -18,18 +18,18 @@ public class AuthAccess {
 
   private final Role role;
 
-  private AuthAccess(String id, Long signId, Role role) {
-    log.info("AuthAccess.Constructor");
+  private AccessRedis(String id, Long signId, Role role) {
+    log.info("AccessRedis.Constructor");
 
     this.id = id;
     this.signId = signId;
     this.role = role;
   }
 
-  public static AuthAccess createRedis(String id, Long signId, Role role) {
-    log.info("AuthAccess.createRedis");
+  public static AccessRedis createRedis(String id, Long signId, Role role) {
+    log.info("AccessRedis.createRedis");
 
-    return new AuthAccess(id, signId, role);
+    return new AccessRedis(id, signId, role);
   }
 
 }

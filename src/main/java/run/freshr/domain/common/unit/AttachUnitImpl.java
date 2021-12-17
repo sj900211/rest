@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import run.freshr.annotation.Unit;
 import run.freshr.domain.common.entity.Attach;
-import run.freshr.domain.common.repository.AttachRepository;
+import run.freshr.domain.common.repository.jpa.AttachRepository;
 
 @Slf4j
 @Unit

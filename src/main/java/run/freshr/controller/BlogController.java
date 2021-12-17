@@ -2,6 +2,7 @@ package run.freshr.controller;
 
 import static run.freshr.common.config.URIConfig.uriBlogPost;
 import static run.freshr.common.config.URIConfig.uriBlogPostId;
+import static run.freshr.common.config.URIConfig.uriBlogPostIdHit;
 import static run.freshr.common.util.RestUtil.error;
 import static run.freshr.domain.auth.enumeration.Role.Secured.ANONYMOUS;
 import static run.freshr.domain.auth.enumeration.Role.Secured.COACH;
@@ -89,6 +90,14 @@ public class BlogController {
     }
 
     return service.updatePost(id, dto);
+  }
+
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER, ANONYMOUS})
+  @GetMapping(uriBlogPostIdHit)
+  public ResponseEntity<?> addPostHit(@PathVariable Long id) {
+    log.info("BlogController.addPostHit");
+
+    return service.addPostHit(id);
   }
 
   @Secured({SUPER, MANAGER, LEADER, COACH})
