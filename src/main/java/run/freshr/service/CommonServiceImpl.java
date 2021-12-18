@@ -34,6 +34,7 @@ import org.springframework.web.multipart.MultipartFile;
 import run.freshr.domain.common.dto.request.AttachCreateRequest;
 import run.freshr.domain.common.dto.request.IdRequest;
 import run.freshr.domain.common.dto.response.AttachResponse;
+import run.freshr.domain.common.dto.response.HashtagListResponse;
 import run.freshr.domain.common.dto.response.IdResponse;
 import run.freshr.domain.common.dto.response.IsResponse;
 import run.freshr.domain.common.dto.response.KeyResponse;
@@ -185,13 +186,26 @@ public class CommonServiceImpl implements CommonService {
   // |__|  |__| /__/     \__\ |_______/    |__|  |__|     |__|    /__/     \__\ \______|
 
   @Override
+  public ResponseEntity<?> getHashtagAll() {
+    log.info("CommonService.getHashtagAll");
+
+    List<Hashtag> list = hashtagUnit.getList();
+
+    return ok(map(list, HashtagListResponse.class));
+  }
+
+  @Override
   public ResponseEntity<?> getHashtagList() {
+    log.info("CommonService.getHashtagList");
+
     return ok(hashtagUnit.getList(getSignedRole()));
   }
 
   @Override
   @Transactional
   public ResponseEntity<?> createHashtag(IdRequest<String> dto) {
+    log.info("CommonService.createHashtag");
+
     String id = dto.getId();
 
     if (!hashtagUnit.exists(id)) {
@@ -203,17 +217,23 @@ public class CommonServiceImpl implements CommonService {
 
   @Override
   public ResponseEntity<?> existHashtag(String id) {
+    log.info("CommonService.existHashtag");
+
     return ok(IsResponse.builder().is(hashtagUnit.exists(id)).build());
   }
 
   @Override
   public ResponseEntity<?> getHashtag(String id) {
+    log.info("CommonService.getHashtag");
+
     return ok(buildId(hashtagUnit.get(id).getId()));
   }
 
   @Override
   @Transactional
   public ResponseEntity<?> deleteHashtag(String id) {
+    log.info("CommonService.deleteHashtag");
+
     if (hashtagUnit.exists(id)) {
       Hashtag entity = hashtagUnit.get(id);
 

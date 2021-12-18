@@ -12,6 +12,7 @@ import static run.freshr.common.config.URIConfig.uriCommonCrypto;
 import static run.freshr.common.config.URIConfig.uriCommonEnum;
 import static run.freshr.common.config.URIConfig.uriCommonEnumPick;
 import static run.freshr.common.config.URIConfig.uriCommonHashtag;
+import static run.freshr.common.config.URIConfig.uriCommonHashtagAll;
 import static run.freshr.common.config.URIConfig.uriCommonHashtagId;
 import static run.freshr.common.config.URIConfig.uriCommonHeartbeat;
 import static run.freshr.common.util.RestUtil.getConfig;
@@ -168,6 +169,14 @@ public class CommonController {
     log.info("CommonController.getHashtagList");
 
     return service.getHashtagList();
+  }
+
+  @Secured({SUPER, MANAGER, LEADER, COACH, USER, ANONYMOUS})
+  @GetMapping(uriCommonHashtagAll)
+  public ResponseEntity<?> getHashtagAll() {
+    log.info("CommonController.getHashtagList");
+
+    return service.getHashtagAll();
   }
 
   @Secured({SUPER, MANAGER})

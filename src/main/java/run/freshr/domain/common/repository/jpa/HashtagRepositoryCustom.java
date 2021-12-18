@@ -2,10 +2,10 @@ package run.freshr.domain.common.repository.jpa;
 
 import java.util.List;
 import run.freshr.domain.auth.enumeration.Role;
-import run.freshr.domain.common.dto.response.HashtagListResponse;
+import run.freshr.domain.common.dto.response.HashtagCountResponse;
 
 public interface HashtagRepositoryCustom {
 
-  List<HashtagListResponse> getList(Role role);
+  List<HashtagCountResponse> getList(Role role);
 
 }

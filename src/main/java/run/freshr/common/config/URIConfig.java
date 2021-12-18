@@ -20,6 +20,7 @@ public class URIConfig {
   public static final String uriCommonAttachIdDownload = "/file/{id}/download";
   public static final String uriCommonAttachExist = "/file/exist/{id}";
   public static final String uriCommonHashtag = "/hashtag";
+  public static final String uriCommonHashtagAll = "/hashtag/all";
   public static final String uriCommonHashtagId = "/hashtag/{id}";
 
   public static final String uriAuthToken = "/auth/token";

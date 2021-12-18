@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import run.freshr.annotation.Unit;
 import run.freshr.domain.auth.enumeration.Role;
-import run.freshr.domain.common.dto.response.HashtagListResponse;
+import run.freshr.domain.common.dto.response.HashtagCountResponse;
 import run.freshr.domain.common.entity.Hashtag;
 import run.freshr.domain.common.repository.jpa.HashtagRepository;
 
@@ -51,7 +51,14 @@ public class HashtagUnitImpl implements HashtagUnit {
   }
 
   @Override
-  public List<HashtagListResponse> getList(Role role) {
+  public List<Hashtag> getList() {
+    log.info("HashtagUnit.getList");
+
+    return repository.findAllByOrderByIdAsc();
+  }
+
+  @Override
+  public List<HashtagCountResponse> getList(Role role) {
     log.info("HashtagUnit.getList");
 
     return repository.getList(role);

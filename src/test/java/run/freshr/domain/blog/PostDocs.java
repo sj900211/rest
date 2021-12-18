@@ -112,6 +112,19 @@ public class PostDocs {
           .getFieldList();
     }
 
+    public static List<ParameterDescriptor> addPostHit() {
+      log.info("PostDocs.Response.addPostHit");
+
+      return PrintUtil
+          .builder()
+
+          .prefixDescription("포스팅")
+          .parameter(post.id)
+
+          .build()
+          .getParameterList();
+    }
+
     public static List<ParameterDescriptor> removePost() {
       log.info("PostDocs.Response.removePost");
 

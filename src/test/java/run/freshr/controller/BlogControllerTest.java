@@ -10,6 +10,7 @@ import static run.freshr.DataRunner.hashtagList;
 import static run.freshr.DataRunner.postList;
 import static run.freshr.common.config.URIConfig.uriBlogPost;
 import static run.freshr.common.config.URIConfig.uriBlogPostId;
+import static run.freshr.common.config.URIConfig.uriBlogPostIdHit;
 import static run.freshr.common.util.ThreadUtil.threadPublicKey;
 import static run.freshr.util.CryptoUtil.encryptRsa;
 
@@ -166,6 +167,22 @@ public class BlogControllerTest extends TestExtension {
             pathParameters(PostDocs.Request.updatePostPath()),
             requestFields(PostDocs.Request.updatePost())
         ))
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  @DisplayName("포스팅 조회수 증가")
+  @DocsMethod(displayName = "포스팅 조회수 증가", pathParameters = true)
+  public void addPostHit() throws Exception {
+    log.info("BlogControllerTest.addPostHit");
+
+    setAnonymous();
+
+    apply();
+
+    GET(uriBlogPostIdHit, postList.get(0))
+        .andDo(print())
+        .andDo(docs(pathParameters(PostDocs.Request.addPostHit())))
         .andExpect(status().isOk());
   }
 

@@ -43,21 +43,34 @@ public class HashtagDocs {
 
   public static class Response {
 
-    public static List<FieldDescriptor> getHashtagList() {
-      log.info("HashtagDocs.Response.getHashtagList");
+    public static List<FieldDescriptor> getHashtagAll() {
+      log.info("HashtagDocs.Response.getHashtagAll");
 
       return ResponseDocs
           .Response
           .list()
 
           .field(hashtag.id, "해시태그")
-          .field("count", "포스팅 수", NUMBER)
 
           .build()
           .getFieldList();
     }
 
+  public static List<FieldDescriptor> getHashtagList() {
+    log.info("HashtagDocs.Response.getHashtagList");
+
+    return ResponseDocs
+        .Response
+        .list()
+
+        .field(hashtag.id, "해시태그")
+        .field("count", "포스팅 수", NUMBER)
+
+        .build()
+        .getFieldList();
   }
+
+}
 
   public static class Docs {
   }

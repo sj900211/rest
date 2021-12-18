@@ -19,6 +19,7 @@ import static run.freshr.common.config.URIConfig.uriCommonCrypto;
 import static run.freshr.common.config.URIConfig.uriCommonEnum;
 import static run.freshr.common.config.URIConfig.uriCommonEnumPick;
 import static run.freshr.common.config.URIConfig.uriCommonHashtag;
+import static run.freshr.common.config.URIConfig.uriCommonHashtagAll;
 import static run.freshr.common.config.URIConfig.uriCommonHashtagId;
 import static run.freshr.common.util.RestUtil.buildId;
 
@@ -210,6 +211,22 @@ public class CommonControllerTest extends TestExtension {
   // |   __   |   /  /_\  \       \   \    |   __   |     |  |      /  /_\  \  |  | |_ |
   // |  |  |  |  /  _____  \  .----)   |   |  |  |  |     |  |     /  _____  \ |  |__| |
   // |__|  |__| /__/     \__\ |_______/    |__|  |__|     |__|    /__/     \__\ \______|
+
+  @Test
+  @DisplayName("해시태그 조회 - 전체")
+  @DocsMethod(displayName = "해시태그 조회 - 전체", responseFields = true)
+  public void getHashtagAll() throws Exception {
+    log.info("CommonControllerTest.getHashtagAll");
+
+    setAnonymous();
+
+    apply();
+
+    GET(uriCommonHashtagAll)
+        .andDo(print())
+        .andDo(docs(responseFields(HashtagDocs.Response.getHashtagAll())))
+        .andExpect(status().isOk());
+  }
 
   @Test
   @DisplayName("해시태그 조회 - List")

@@ -33,6 +33,8 @@ public interface CommonService {
       NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException,
       InternalException;
 
+  ResponseEntity<?> getHashtagAll();
+
   ResponseEntity<?> getHashtagList();
 
   ResponseEntity<?> createHashtag(IdRequest<String> dto);

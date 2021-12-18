@@ -9,8 +9,8 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import run.freshr.domain.auth.enumeration.Role;
-import run.freshr.domain.common.dto.response.HashtagListResponse;
-import run.freshr.domain.common.dto.response.QHashtagListResponse;
+import run.freshr.domain.common.dto.response.HashtagCountResponse;
+import run.freshr.domain.common.dto.response.QHashtagCountResponse;
 
 @RequiredArgsConstructor
 public class HashtagRepositoryImpl implements HashtagRepositoryCustom {
@@ -18,9 +18,9 @@ public class HashtagRepositoryImpl implements HashtagRepositoryCustom {
   private final JPAQueryFactory queryFactory;
 
   @Override
-  public List<HashtagListResponse> getList(Role role) {
+  public List<HashtagCountResponse> getList(Role role) {
     return queryFactory
-        .select(new QHashtagListResponse(
+        .select(new QHashtagCountResponse(
             hashtag.id,
             JPAExpressions
                 .select(post.count())

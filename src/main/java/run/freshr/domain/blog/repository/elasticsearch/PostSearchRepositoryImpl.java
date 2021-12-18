@@ -68,20 +68,13 @@ public class PostSearchRepositoryImpl implements PostSearchRepositoryCustom {
     String word = search.getWord();
 
     if (hasLength(word)) {
-      if (word.contains("#")) {
-        String hashtag = word.substring(1);
+      BoolQueryBuilder keywordCompare = QueryBuilders.boolQuery();
+      PostPageKeys.find(search.getKey())
+          .getPaths()
+          .forEach(item -> keywordCompare
+              .should(QueryBuilders.wildcardQuery(field(item), "*" + word + "*")));
 
-        compareBuilder
-            .must(QueryBuilders.matchQuery(field(post.hashtagList.any().hashtag.id), hashtag));
-      } else {
-        BoolQueryBuilder keywordCompare = QueryBuilders.boolQuery();
-        PostPageKeys.find(search.getKey())
-            .getPaths()
-            .forEach(item -> keywordCompare
-                .should(QueryBuilders.wildcardQuery(field(item), "*" + word + "*")));
-
-        compareBuilder.must(keywordCompare);
-      }
+      compareBuilder.must(keywordCompare);
     }
 
     FieldSortBuilder sort = SortBuilders.fieldSort(field(post.id)).order(DESC);
